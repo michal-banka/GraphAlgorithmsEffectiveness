@@ -5,7 +5,6 @@ int main()
 {
 	//Menu menu;
 	//menu.showMenu();
-	
 	std::cin.get();
 	return 0;
 }

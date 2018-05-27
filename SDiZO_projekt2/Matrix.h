@@ -3,27 +3,28 @@
 class Matrix
 {
 private:
-	int** table2d;
+	int** tab;
 	//number of vertices
-	int vertex;
+	int vertices;
+	int edges;
 public:
 	Matrix();
-	Matrix(int vertex);
+	Matrix(int vertices, int edges);
 	~Matrix();
 
-	void addNNewVertex();
-	void addNNewVertex(int n);
+	void addNNewVertices();
+	void addNNewVertices(int n);
 	void removeVertex();
 	void removeVertex(int n);
 	
 	void addEdge();
-	void addEdge(int fromVertex, int toVertex, int weight);
+	void addEdge(int fromVertex, int toVertex, int weight, bool directed);
 	void removeEdge();
-	void removeEdge(int fromVertex, int toVertex);
+	void removeEdge(int index);
 
 	void showMatrix();
 
-	/* TO DO
+	/* TODO
 	*/
 };
 
