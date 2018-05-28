@@ -4,6 +4,7 @@
 int main()
 {
 	//TODO
+	//change language of Bidircetional classes' methods to Polish (?) 
 	//Menu menu;
 	//menu.showMenu();
 	std::cin.get();

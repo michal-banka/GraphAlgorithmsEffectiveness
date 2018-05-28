@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "MatrixRepresentation.h"
 
 
 Matrix::Matrix()

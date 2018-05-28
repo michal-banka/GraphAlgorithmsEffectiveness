@@ -139,15 +139,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="List.cpp" />
-    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="BiList_SingleEdge.cpp" />
+    <ClCompile Include="BidirectionalListManagment.cpp" />
+    <ClCompile Include="ListRepresentation.cpp" />
+    <ClCompile Include="MatrixRepresentation.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BidirectionalList.h" />
+    <ClInclude Include="BidirectionalListManagment.h" />
     <ClInclude Include="Libs.h" />
-    <ClInclude Include="List.h" />
-    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="ListRepresentation.h" />
+    <ClInclude Include="MatrixRepresentation.h" />
     <ClInclude Include="Menu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
