@@ -139,8 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BiList_SingleEdge.cpp" />
+    <ClCompile Include="BidirectionalList.cpp" />
     <ClCompile Include="BidirectionalListManagment.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="ListRepresentation.cpp" />
     <ClCompile Include="MatrixRepresentation.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="BidirectionalList.h" />
     <ClInclude Include="BidirectionalListManagment.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="Libs.h" />
     <ClInclude Include="ListRepresentation.h" />
     <ClInclude Include="MatrixRepresentation.h" />

@@ -13,7 +13,7 @@ private:
 public:
 	BidirectionalList();
 	BidirectionalList(BidirectionalList* next, BidirectionalList* prev);
-	BidirectionalList(BidirectionalList* next, BidirectionalList* prev, int value);
+	BidirectionalList(BidirectionalList* next, BidirectionalList* prev, int value, int weight);
 	~BidirectionalList();
 
 	BidirectionalList* getNext();

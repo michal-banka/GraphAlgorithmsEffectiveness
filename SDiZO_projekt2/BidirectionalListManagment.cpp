@@ -12,11 +12,7 @@ BidirectionalListManagement::BidirectionalListManagement()
 
 BidirectionalListManagement::~BidirectionalListManagement()
 {
-	while (head != nullptr)
-	{
-		head = head->getNext();
-		delete head->getPrev();
-	}
+	deleteAll(0);
 	delete head;
 	delete tail;
 	
@@ -147,8 +143,6 @@ void BidirectionalListManagement::addNewElement()
 //same as upper method but with arguments
 void BidirectionalListManagement::addNewElement(int value,  int weight, int position)
 {
-	BidirectionalList* newElem;
-	BidirectionalList* pointer;
 	// "index" of new element, count is index of one after last so it will be new end
 	if (position >=0 && position <= count)
 	{
@@ -297,12 +291,14 @@ int BidirectionalListManagement::findElementPos()
 int BidirectionalListManagement::findElementPos(int value)
 {
 	BidirectionalList* temp = getHead();
-	for (int i = 0; i < count; i++)
+	int pos = 0;
+	while (temp)
 	{
-		if (temp->getValue() == value)
+		if(temp->getValue() == value)
 		{
-			return i;
+			return pos;
 		}
+		pos++;
 		temp = temp->getNext();
 	}
 	return -1;

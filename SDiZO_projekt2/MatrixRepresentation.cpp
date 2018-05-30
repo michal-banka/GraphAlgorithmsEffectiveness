@@ -1,4 +1,5 @@
 #include "MatrixRepresentation.h"
+#include <complex.h>
 
 
 Matrix::Matrix()
@@ -36,24 +37,21 @@ Matrix::~Matrix()
 	delete [] this->tab;
 }
 
-void Matrix::addNNewVertices()
+int Matrix::getVertices()
 {
-	int n = -1;
-	do
-	{
-		std::cout << "Podaj ilosc nowych krawedzi:\t";
-		std::cin >> n;
-		std::cin.get();
-	} while (n < 0);
-	addNNewVertices(n);
+	return this->vertices;
 }
 
-void Matrix::addNNewVertices(int n)
+int Matrix::getEdges()
 {
-	if (n <= 0) return;
+	return this->edges;
+}
+
+void Matrix::addVertex()
+{
 	if (edges == 0)
 	{
-		this->vertices += n;
+		this->vertices++;
 		return;
 	}
 
@@ -61,22 +59,19 @@ void Matrix::addNNewVertices(int n)
 	int** temp = new int*[edges];
 	for (int i = 0; i < edges; i++)
 	{
-		temp[i] = new int[vertices + n];
+		temp[i] = new int[vertices + 1];
 	}
 
 	for (int i = 0; i < edges; i++)
 	{
-		for (int j = 0 ; j < vertices; j++)
+		for (int j = 0; j < vertices; j++)
 		{
 			temp[i][j] = tab[i][j];
 		}
-		for (int j = vertices; j < vertices + n; j++)
-		{
-			temp[i][j] = 0;
-		}
+		temp[i][vertices - 1] = 0;
 	}
-	
-	this->vertices += n;
+
+	this->vertices++;
 
 	tab = temp;
 }
@@ -86,7 +81,7 @@ void Matrix::removeVertex()
 	int n = -1;
 	do
 	{
-		std::cout << "Podaj numer krawedzi do usuniecia (0 - " << vertices << "):\t";
+		std::cout << "Podaj numer wierzcholka do usuniecia (0 - " << vertices << "):\t";
 		std::cin >> n;
 		std::cin.get();
 	} while (n < 0);
@@ -213,11 +208,11 @@ void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 	//put two weigths on last line (new edge)
 	if (directed)
 	{
-		temp[edges - 1][fromVertex] = weight;
+		temp[edges - 1][fromVertex] = -weight;
 	}
 	else
 	{
-		temp[edges - 1][fromVertex] = -weight;
+		temp[edges - 1][fromVertex] = weight;
 	}
 	temp[edges - 1][toVertex] = weight;
 
@@ -226,51 +221,68 @@ void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 
 void Matrix::removeEdge()
 {
-	if (edges == 0)
-	{
-		std::cout << "Nie ma krawedzi, nic nie usunieto !" << std::endl;
-		return;
-	}
-	int v1 = -1, v2 = -1;
+	int v1 = -1, v2 = -1, w = -1, d = -1;
 	do
 	{
-		std::cout << "Podaj indeks krawedzi (0 - " << edges - 1 << "):\t";
+		std::cout << "Podaj numer poczatkowego wierzcholka (0 - " << vertices - 1 << "):\t";
 		std::cin >> v1;
 		std::cin.get();
-	} while (v1 < 0 || v1 > edges);
-	removeEdge(v1);
+	} while (v1 < 0 || v1 > vertices);
+
+	do
+	{
+		std::cout << "Podaj numer koncowego wierzcholka (0 - " << vertices - 1 << "):\t";
+		std::cin >> v2;
+		std::cin.get();
+	} while (v2 < 0 || v2 > vertices);
+
+	do
+	{
+		std::cout << "Krawedz skierowana? \n1. Tak \n2. Nie \nTwoj wybor:";
+		std::cin >> d;
+		std::cin.get();
+	} while (d < 1 || d > 2);
+
+	if (d == 1) removeEdge(v1, v2, true);
+	else removeEdge(v1, v2, false);
 }
 
-void Matrix::removeEdge(int index)
+void Matrix::removeEdge(int fromVertex, int toVertex, bool directed)
 {
-	if (index < 0 || index > edges -1)
+	if (edges == 0 || fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices - 1) return;
+
+	//check if this edge exists
+	for (int i = 0 ; i < edges; i++)
 	{
-		std::cout << "Nie ma krawedzi lub zly wybor, nic nie usunieto !" << std::endl;
-		return;
+		//if yes rewrite tab without this one edge
+		if (tab[i][fromVertex] != 0 && tab[i][toVertex] != 0)
+		{
+			this->edges--;
+
+			int** temp = new int*[edges];
+			for (int i = 0; i < edges; i++)
+			{
+				temp[i] = new int[vertices];
+			}
+
+			for (int j = 0; j < i; j++)
+			{
+				temp[j] = tab[j];
+			}
+
+			for (int j = i + 1;j < edges; j++)
+			{
+				temp[j - 1] = tab[j];
+			}
+			tab = temp;
+			return;
+		}
 	}
 
-	this->edges--;
-
-	int** temp = new int*[edges];
-	for (int i = 0; i < edges; i++)
-	{
-		temp[i] = new int[vertices];
-	}
-
-	for (int i = 0; i < index; i++)
-	{
-		temp[i] = tab[i];
-	}
-
-	for (int i = index + 1; i < edges; i++)
-	{
-		temp[i - 1] = tab[i];
-	}
-
-	tab = temp;
+	std::cout << "Nie znaleziono takiej krawêdzi" << std::endl;
 }
 
-void Matrix::showMatrix()
+void Matrix::show()
 {
 	
 	for (int i = 0; i < 32; i++)
@@ -278,7 +290,7 @@ void Matrix::showMatrix()
 		std::cout << (char)219;
 	}
 
-	std::cout << std::endl << "Macierz [" << edges << (char)158 << vertices << "] " << std::endl;
+	std::cout << std::endl << "Reprezentacja macierzowa\n [" << edges << (char)158 << vertices << "] " << std::endl;
 
 	for (int i = 0; i < 32; i++)
 	{

@@ -7,6 +7,7 @@ BidirectionalList::BidirectionalList()
 	this->next = nullptr;
 	this->prev = nullptr;
 	this->value = 0;
+	this->weight = 0;
 }
 
 BidirectionalList::BidirectionalList(BidirectionalList* next, BidirectionalList* prev)
@@ -17,18 +18,21 @@ BidirectionalList::BidirectionalList(BidirectionalList* next, BidirectionalList*
 	std::cin.get();
 	this->next = next;
 	this->prev = prev;
+	this->weight = 0;
 }
 
-BidirectionalList::BidirectionalList(BidirectionalList * next, BidirectionalList * prev, int value)
+BidirectionalList::BidirectionalList(BidirectionalList* next, BidirectionalList* prev, int value, int weight)
 {
 	this->next = next;
 	this->prev = prev;
 	this->value = value;
+	this->weight = weight;
 }
-
 
 BidirectionalList::~BidirectionalList()
 {
+	delete next;
+	delete prev;
 }
 
 BidirectionalList * BidirectionalList::getNext()

@@ -1,6 +1,6 @@
 #pragma once
 #include "MatrixRepresentation.h"
-
+#include "ListRepresentation.h"
 
 class Menu
 {

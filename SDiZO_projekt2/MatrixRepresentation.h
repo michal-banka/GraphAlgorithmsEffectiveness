@@ -12,17 +12,19 @@ public:
 	Matrix(int vertices, int edges);
 	~Matrix();
 
-	void addNNewVertices();
-	void addNNewVertices(int n);
+	int getVertices();
+	int getEdges();
+
+	void addVertex();
 	void removeVertex();
 	void removeVertex(int n);
 	
 	void addEdge();
 	void addEdge(int fromVertex, int toVertex, int weight, bool directed);
 	void removeEdge();
-	void removeEdge(int index);
+	void removeEdge(int fromVertex, int toVertex, bool directed);
 
-	void showMatrix();
+	void show();
 
 	/* TODO
 	*/
