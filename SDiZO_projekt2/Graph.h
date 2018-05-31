@@ -7,20 +7,27 @@ class Graph
 private:
 	List listRepresentation;
 	Matrix matrixRepresentation;
-	int vertices;
-	int edges;
+	bool directed;
+
 public:
 	Graph();
-	Graph(List listRepresentation, Matrix matrixRepresentation);
+	Graph(bool directed);
+	Graph(List listRepresentation, Matrix matrixRepresentation,bool directed);
 	~Graph();
 
 	void addVertex();
 	void removeVertex();
 	void removeVertex(int n);
 	void addEdge();
-	void addEdge(int fromVertex, int toVertex, int weight, bool directed);
+	void addEdge(int fromVertex, int toVertex, int weight);
 	void removeEdge();
+	void removeEdge(int fromVertex, int toVertex);
 
 	void showRepresentations();
+
+	void fillRandom();
+	void fillRandom(int vertices, int density, int weightRange);
+	void fillFromFile();
+	void fillFromFile(std::string filename);
 };
 

@@ -55,7 +55,7 @@ void List::removeVertex()
 
 void List::removeVertex(int index)
 {
-	if (index < 0 || index > vertices - 1) return;
+	if (index < 0 || index > vertices - 1 || vertices <= 0) return;
 
 	//first we delete every edge connected to index
 	//whether it is directed or indirected graph
@@ -140,8 +140,16 @@ void List::addEdge()
 
 void List::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 {
-	if (fromVertex < 0 || fromVertex > vertices - 1 || toVertex < 0 || toVertex > vertices - 1) return;
+	//return if:
+	//weight < 0
+	//less than 2 vertices
+	//any index of vertex doesn't exist
+	//this edge already exists
 
+	if (fromVertex < 0 || fromVertex > vertices - 1 || toVertex < 0 ||
+		toVertex > vertices - 1 || vertices <= 1 || weight <= 0 || list[fromVertex].findElementPos(toVertex) != -1 ||
+		toVertex == fromVertex) return;
+	
 	list[fromVertex].addNewElementEnd(toVertex, weight);
 	if (!directed && fromVertex != toVertex)
 	{
@@ -179,7 +187,7 @@ void List::removeEdge()
 
 void List::removeEdge(int fromVertex, int toVertex, bool directed)
 {
-	if (fromVertex < 0 || fromVertex > vertices - 1 || toVertex < 0 || toVertex > vertices - 1) return;
+	if (fromVertex < 0 || fromVertex > vertices - 1 || toVertex < 0 || toVertex > vertices - 1 || vertices <= 0) return;
 
 	list[fromVertex].deleteElement(list[fromVertex].findElementPos(toVertex));
 
@@ -187,6 +195,12 @@ void List::removeEdge(int fromVertex, int toVertex, bool directed)
 	{
 		list[toVertex].deleteElement(list[toVertex].findElementPos(fromVertex));
 	}
+}
+
+bool List::doesEdgeExists(int fromVertex, int toVertex)
+{
+	//O(E)
+	return list[fromVertex].findElementPos(toVertex) >= 0;
 }
 
 void List::show()

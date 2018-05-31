@@ -78,10 +78,11 @@ void Matrix::addVertex()
 
 void Matrix::removeVertex()
 {
+	if (vertices <= 0) return;
 	int n = -1;
 	do
 	{
-		std::cout << "Podaj numer wierzcholka do usuniecia (0 - " << vertices << "):\t";
+		std::cout << "Podaj numer wierzcholka do usuniecia (0 - " << vertices - 1 << "):\t";
 		std::cin >> n;
 		std::cin.get();
 	} while (n < 0);
@@ -92,11 +93,7 @@ void Matrix::removeVertex()
 void Matrix::removeVertex(int n)
 {
 	//we have to delete one vertex and every edge that is connected to it
-	if (n < 0 || n > vertices)
-	{
-		std::cout << "Macierz pusta lub zly wybor, nic nie usunieto !" << std::endl;
-		return;
-	}
+	if (n < 0 || n > vertices || vertices <= 0) return;
 
 	int edgesToDelete = 0;
 
@@ -182,6 +179,18 @@ void Matrix::addEdge()
 
 void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 {
+	//return if:
+		//weight < 0
+		//less than 2 vertices
+		//any index of vertex doesn't exist
+		//this edge already exists
+
+	if (fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices - 1 || weight <= 0 || vertices <= 1 || fromVertex == toVertex) return;
+	for (int i = 0 ;i < edges; i++)
+	{
+		if ((tab[i][fromVertex] < 0 && tab[i][toVertex] > 0 && directed) || (tab[i][fromVertex] > 0 && tab[i][toVertex] > 0 && !directed)) return;
+	}
+
 	this->edges++;
 
 	int** temp = new int*[edges];
@@ -249,7 +258,7 @@ void Matrix::removeEdge()
 
 void Matrix::removeEdge(int fromVertex, int toVertex, bool directed)
 {
-	if (edges == 0 || fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices - 1) return;
+	if (edges <= 0 || fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices - 1) return;
 
 	//check if this edge exists
 	for (int i = 0 ; i < edges; i++)
