@@ -279,5 +279,8 @@ void Graph::dijkstra()
 
 void Graph::dijkstra(int from, int to)
 {
+	std::cout << "ALGORYTM DIJKSTRY \nLista: \n";
 	listRepresentation.dijkstra(from, to);
+	std::cout << "Macierz: \n";
+	matrixRepresentation.dijkstra(from, to,directed);
 }

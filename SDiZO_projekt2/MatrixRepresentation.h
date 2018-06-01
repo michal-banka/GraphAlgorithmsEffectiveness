@@ -26,7 +26,6 @@ public:
 
 	void show();
 
-	/* TODO
-	*/
+	int dijkstra(int from, int to, bool directed);
 };
 

@@ -159,7 +159,7 @@ void List::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 
 void List::removeEdge()
 {
-	int v1 = -1, v2 = -1, w = -1, d = -1;
+	int v1 = -1, v2 = -1, d = -1;
 	do
 	{
 		std::cout << "Podaj numer poczatkowego wierzcholka (0 - " << vertices - 1 << "):\t";
@@ -236,7 +236,6 @@ int List::dijkstra(int from, int to)
 	//now we check every vertex
 	while(checked.doesValueExist(0))
 	{
-		std::cout << now << std::endl;
 		BidirectionalList* temp = list[now].getHead();
 
 		//check every edge of vertex
@@ -284,7 +283,6 @@ int List::dijkstra(int from, int to)
 		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
 		return nodes[to].distance;
 	}
-	
 }
 
 void List::show()

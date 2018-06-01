@@ -1,5 +1,8 @@
 #include "MatrixRepresentation.h"
 #include <complex.h>
+#include "BidirectionalListManagment.h"
+#include <valarray>
+#include <chrono>
 
 
 Matrix::Matrix()
@@ -324,4 +327,83 @@ void Matrix::show()
 		std::cout << (char)219;
 	}
 	std::cout << std::endl;
+}
+
+int Matrix::dijkstra(int from, int to, bool directed)
+{
+	struct dijkstraNode
+	{
+		int distance = 0;
+		int previous = -1;
+	};
+
+	BidirectionalListManagement checked = BidirectionalListManagement(vertices);
+	int now = from;
+	dijkstraNode* nodes = new dijkstraNode[vertices];
+
+	for (int i = 0; i < vertices; i++)
+	{
+		nodes[i].distance = 1000;
+	}
+
+	nodes[from].distance = 0;
+	nodes[from].previous = 0;
+
+	//now we check every vertex
+	while (checked.doesValueExist(0))
+	{
+		for(int i = 0 ;i < edges; i++)
+		{
+			//first find edge connected to given fromVertex
+			if (tab[i][now] < 0 && directed || tab[i][now] != 0 && !directed)
+			{
+				//when found, find index of toVertex
+				for (int j = 0; j < vertices; j++)
+				{
+					//when found
+					//if new path is shorter than previous change with new
+					//since when abs doesn't work for ints???
+					if (tab[i][j] != 0 && j != now && nodes[now].distance + abs(static_cast<double>(tab[i][now])) < nodes[j].distance)
+					{
+						nodes[j].distance = nodes[now].distance + abs(static_cast<double>(tab[i][now]));
+						nodes[j].previous = now;
+						break;
+					}
+				}
+			}
+			checked[now]->setValue(1);
+		}
+
+
+		//find node with the smallest node distance which has NOT been checked yet
+		int min = 1000;
+
+		for (int i = 0; i < vertices; i++)
+		{
+			if (nodes[i].distance < min && checked[i]->getValue() != 1)
+			{
+				min = nodes[i].distance;
+				now = i;
+			}
+		}
+	}
+
+	if (nodes[to].previous == -1)
+	{
+		std::cout << "Wierzcholek nie polaczony z wierzcholkiem poczatkowym." << std::endl;
+		return -1;
+	}
+	else
+	{
+		now = to;
+		std::cout << "DROGA: ";
+		while (now != from)
+		{
+			std::cout << now << ", ";
+			now = nodes[now].previous;
+		}
+		std::cout << from << std::endl;
+		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
+		return nodes[to].distance;
+	}
 }

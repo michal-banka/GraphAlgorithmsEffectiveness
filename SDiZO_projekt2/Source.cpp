@@ -9,8 +9,7 @@ int main()
 	//change language of Bidircetional classes' methods to Polish (?)
 	//create algorithms in Graph class
 	//create menu
-	//Menu menu;
-	//menu.showMenu();
+	//do graph to be consistent (!)
 	Graph graph(true);
 	graph.showRepresentations();
 	//graph.fillRandom();
