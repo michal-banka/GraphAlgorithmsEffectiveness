@@ -9,6 +9,18 @@ BidirectionalListManagement::BidirectionalListManagement()
 	this->count = 0;
 }
 
+BidirectionalListManagement::BidirectionalListManagement(int count)
+{
+	this->head = nullptr;
+	this->tail = nullptr;
+	this->count = 0;
+
+	for (int i = 0 ; i < count; i++)
+	{
+		addNewElementEnd(0, 1);
+	}
+}
+
 
 BidirectionalListManagement::~BidirectionalListManagement()
 {
@@ -511,4 +523,52 @@ void BidirectionalListManagement::findElementTime(int value)
 		}
 		temp = temp->getNext();
 	}
+}
+
+bool BidirectionalListManagement::doesValueExist(int value)
+{
+	BidirectionalList* temp = getHead();
+	while(temp)
+	{
+		if (temp->getValue() == value)
+		{
+			return true;
+		}
+		temp = temp->getNext();
+	}
+	return false;
+}
+
+int BidirectionalListManagement::getMinimumValueIndex(int value)
+{
+	if (count <= 0) return -1;
+
+	BidirectionalList* temp = getHead()->getNext();
+	int minimum = head->getValue();
+	int i = 0;
+	int index = 0;
+	while(temp)
+	{
+		if(temp->getValue() < minimum)
+		{
+			index = i;
+			minimum = temp->getValue();
+		}
+		i++;
+		temp = temp->getNext();
+	}
+
+	return index;
+}
+
+BidirectionalList*& BidirectionalListManagement::operator[](int el)
+{
+	BidirectionalList* head = getHead();
+	int i = 0;
+	while (head && i < el)
+	{
+		head = head->getNext();
+		i++;
+	}
+	return head;
 }

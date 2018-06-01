@@ -13,6 +13,7 @@ private:
 
 public:
 	BidirectionalListManagement();
+	BidirectionalListManagement(int count);
 	~BidirectionalListManagement();
 
 	//getters and setters
@@ -57,5 +58,10 @@ public:
 
 	void findElementTime();
 	void findElementTime(int value);
+
+	bool doesValueExist(int value);
+	int getMinimumValueIndex(int value);
+
+	BidirectionalList* & operator[](int el);
 };
 

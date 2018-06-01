@@ -31,8 +31,8 @@ BidirectionalList::BidirectionalList(BidirectionalList* next, BidirectionalList*
 
 BidirectionalList::~BidirectionalList()
 {
-	delete next;
-	delete prev;
+	/*delete next;
+	delete prev;*/
 }
 
 BidirectionalList * BidirectionalList::getNext()

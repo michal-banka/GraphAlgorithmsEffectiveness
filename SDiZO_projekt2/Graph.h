@@ -29,5 +29,8 @@ public:
 	void fillRandom(int vertices, int density, int weightRange);
 	void fillFromFile();
 	void fillFromFile(std::string filename);
+
+	void dijkstra();
+	void dijkstra(int from, int to);
 };
 

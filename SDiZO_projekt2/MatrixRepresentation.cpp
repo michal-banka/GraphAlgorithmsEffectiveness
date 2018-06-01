@@ -160,10 +160,10 @@ void Matrix::addEdge()
 
 	do
 	{
-		std::cout << "Podaj wage krawedzi:\t";
+		std::cout << "Podaj wage krawedzi (1 - 999):\t";
 		std::cin >> w;
 		std::cin.get();
-	} while (w < 0);
+	} while (w < 1 || w > 999);
 
 	do
 	{

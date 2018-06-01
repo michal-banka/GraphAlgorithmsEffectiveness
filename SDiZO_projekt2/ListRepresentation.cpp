@@ -121,10 +121,10 @@ void List::addEdge()
 
 	do
 	{
-		std::cout << "Podaj wage krawedzi:\t";
+		std::cout << "Podaj wage krawedzi (1 - 999):\t";
 		std::cin >> w;
 		std::cin.get();
-	} while (w < 0);
+	} while (w <= 0 || w >= 1000);
 
 	do
 	{
@@ -201,6 +201,90 @@ bool List::doesEdgeExists(int fromVertex, int toVertex)
 {
 	//O(E)
 	return list[fromVertex].findElementPos(toVertex) >= 0;
+}
+
+int List::dijkstra(int from, int to)
+{
+	if (vertices <= 0 || from < 0 || to < 0 || from > vertices -1 || to > vertices - 1) return -1;
+
+	//create struct which will represent road to any vertex
+	struct dijkstraNode
+	{
+		int distance = 0;
+		int previous = -1;
+	};
+
+	//construct list to inform which vertex were checked, 
+	//it could be simple array but I don't use STL and it's already implemented
+	//what is more, list has better times of adding to end
+	//constructor fullfil list with 0 as value
+	//0 - not checked, 1 - checked
+	BidirectionalListManagement checked = BidirectionalListManagement(vertices);
+	int now = from;
+	dijkstraNode* nodes = new dijkstraNode[vertices];
+	//fill every node with distance = 1000 (it's over limit of weight that might be given by user)
+	//except nodes[from], it has distance = 0
+	
+	for(int i = 0 ;i < vertices; i++)
+	{
+		nodes[i].distance = 1000;
+	}
+
+	nodes[from].distance = 0;
+	nodes[from].previous = 0;
+
+	//now we check every vertex
+	while(checked.doesValueExist(0))
+	{
+		std::cout << now << std::endl;
+		BidirectionalList* temp = list[now].getHead();
+
+		//check every edge of vertex
+		while(temp)
+		{
+			//if new path is shorter than previous change with new
+			if (nodes[now].distance + temp->getWeight() < nodes[temp->getValue()].distance)
+			{
+				nodes[temp->getValue()].distance = nodes[now].distance + temp->getWeight();
+				nodes[temp->getValue()].previous = now;
+			}
+			temp = temp->getNext();
+		}
+		checked[now]->setValue(1);
+		delete temp;
+
+		//find node with the smallest node distance which has NOT been checked yet
+		int min = 1000;
+
+		for (int i = 0 ;i < vertices; i++)
+		{
+			if (nodes[i].distance < min && checked[i]->getValue() != 1)
+			{
+				min = nodes[i].distance;
+				now = i;
+			}
+		}
+	}
+
+	if (nodes[to].previous == -1)
+	{
+		std::cout << "Wierzcholek nie polaczony z wierzcholkiem poczatkowym." << std::endl;
+		return -1;
+	}
+	else
+	{
+		now = to;
+		std::cout << "DROGA: ";
+		while(now != from)
+		{
+			std::cout << now << ", ";
+			now = nodes[now].previous;
+		}
+		std::cout << from << std::endl;
+		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
+		return nodes[to].distance;
+	}
+	
 }
 
 void List::show()

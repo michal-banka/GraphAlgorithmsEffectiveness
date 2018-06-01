@@ -11,10 +11,12 @@ int main()
 	//create menu
 	//Menu menu;
 	//menu.showMenu();
-	Graph graph;
+	Graph graph(true);
 	graph.showRepresentations();
-	graph.fillFromFile();
+	//graph.fillRandom();
+	graph.fillFromFile("data2.txt");
 	graph.showRepresentations();
+	graph.dijkstra();
 
 	std::cin.get();
 	return 0;

@@ -257,3 +257,27 @@ void Graph::fillFromFile(std::string filename)
 
 	read.close();
 }
+
+void Graph::dijkstra()
+{
+	int to = 0, from = 0;
+	do
+	{
+		std::cout << "Podaj wierzcholek poczatkowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
+		std::cin >> from;
+		std::cin.get();
+	} while (to < 0 || to > matrixRepresentation.getVertices() - 1);
+
+	do
+	{
+		std::cout << "Podaj wierzcholek koncowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
+		std::cin >> to;
+		std::cin.get();
+	} while (from < 0 || from > matrixRepresentation.getVertices() - 1);
+	dijkstra(from,to);
+}
+
+void Graph::dijkstra(int from, int to)
+{
+	listRepresentation.dijkstra(from, to);
+}
