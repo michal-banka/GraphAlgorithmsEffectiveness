@@ -32,12 +32,20 @@ Matrix::Matrix(int vertices, int edges)
 
 Matrix::~Matrix()
 {
-	for (int i = 0; i < edges; i++)
+	/*std::cout << "Matrix destructor 1";
+	if (edges == 0)
 	{
-		delete[] this->tab[i];
+		delete[] this->tab;
 	}
-
-	delete [] this->tab;
+	else
+	{
+		for (int i = 0; i < edges; i++)
+		{
+			delete[] this->tab[i];
+		}
+		delete[] this->tab;
+	}
+	std::cout << "Matrix destructor 2";*/
 }
 
 int Matrix::getVertices()
@@ -77,6 +85,12 @@ void Matrix::addVertex()
 	this->vertices++;
 
 	tab = temp;
+
+	/*for (int i = 0; i < edges; i++)
+	{
+		delete[] temp[i];
+	}
+	delete[] temp;*/
 }
 
 void Matrix::removeVertex()
@@ -142,6 +156,12 @@ void Matrix::removeVertex(int n)
 	}
 
 	tab = temp;
+
+	/*for (int i = 0; i < edges; i++)
+	{
+		delete[] temp[i];
+	}
+	delete[] temp;*/
 }
 
 void Matrix::addEdge()
@@ -187,7 +207,6 @@ void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 		//less than 2 vertices
 		//any index of vertex doesn't exist
 		//this edge already exists
-
 	if (fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices - 1 || weight <= 0 || vertices <= 1 || fromVertex == toVertex) return;
 	for (int i = 0 ;i < edges; i++)
 	{
@@ -229,6 +248,12 @@ void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 	temp[edges - 1][toVertex] = weight;
 
 	tab = temp;
+
+	/*for (int i = 0; i < edges; i++)
+	{
+		delete[] temp[i];
+	}
+	delete[] temp;*/
 }
 
 void Matrix::removeEdge()
@@ -254,7 +279,7 @@ void Matrix::removeEdge()
 		std::cin >> d;
 		std::cin.get();
 	} while (d < 1 || d > 2);
-
+	
 	if (d == 1) removeEdge(v1, v2, true);
 	else removeEdge(v1, v2, false);
 }
@@ -287,6 +312,13 @@ void Matrix::removeEdge(int fromVertex, int toVertex, bool directed)
 				temp[j - 1] = tab[j];
 			}
 			tab = temp;
+
+			/*for (int i = 0; i < edges; i++)
+			{
+				delete[] temp[i];
+			}
+			delete[] temp;*/
+
 			return;
 		}
 	}
@@ -391,6 +423,7 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	if (nodes[to].previous == -1)
 	{
 		std::cout << "Wierzcholek nie polaczony z wierzcholkiem poczatkowym." << std::endl;
+		delete[] nodes;
 		return -1;
 	}
 	else
@@ -404,6 +437,7 @@ int Matrix::dijkstra(int from, int to, bool directed)
 		}
 		std::cout << from << std::endl;
 		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
+		delete[] nodes;
 		return nodes[to].distance;
 	}
 }

@@ -16,7 +16,11 @@ List::List(BidirectionalListManagement* list, int vertices)
 
 List::~List()
 {
-	delete[] this->list;
+	/*for(int i = 0; i < vertices; i++)
+	{
+		delete list[i].getHead();
+	}*/
+	//delete[] this->list;
 }
 
 int List::getVertices()
@@ -38,6 +42,7 @@ void List::addVertex()
 	temp[vertices - 1] = newVertex;
 
 	list = temp;
+
 }
 
 void List::removeVertex()
@@ -283,6 +288,134 @@ int List::dijkstra(int from, int to)
 		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
 		return nodes[to].distance;
 	}
+}
+
+int List::prim()
+{
+	struct node
+	{
+		int from = -1;
+		int to = -1;
+		int weight = 0;
+	};
+	int now = 0;
+	int size = 0;
+	int treeSize = 0;
+	
+	node* tree = new node[treeSize];
+	node* nodes = new node[size];
+	node* tempNodes = new node[size + list[now].getCount()];
+	std::cout << size + list[now].getCount();
+
+	BidirectionalList* temp = list[now].getHead();
+
+	while (size > 0 || treeSize == 0)
+	{
+		//delete[] tempNodes;
+		temp = list[now].getHead();
+		std::cout << "NOW = " << now << std::endl;
+		tempNodes = new node[size + list[now].getCount()];
+		bool inserted = false;
+
+		while (temp)
+		{
+			std::cin.get();
+
+			inserted = false;
+			int j = 0;
+
+			//add new edges
+			for(int i = 0 ; i < size; i++)
+			{
+				if (tempNodes[i].weight > temp[now].getWeight() && !inserted)
+				{
+					tempNodes[i] = { now, temp->getValue(), temp->getWeight() };
+					inserted = true;
+				}
+				else if (!inserted)
+				{
+					tempNodes[i] = nodes[i];
+				}
+				else
+				{
+					tempNodes[i + 1] = nodes[i];
+				}
+			}
+			if (!inserted)
+			{
+				tempNodes[size] = { now, temp->getValue(), temp->getWeight() };
+				inserted = true;
+			}
+			size++;
+			temp = temp->getNext();
+
+			nodes = tempNodes;
+		}
+		
+		//delete[] tempNodes;
+
+		for(int i = 0; i < size; i++)
+		{
+			std::cout << "NODE " << i << ": " << nodes[i].from << " " << nodes[i].to << " " << nodes[i].weight << std::endl;
+		}
+
+		// set next node to check
+		int idxNode = 0;
+		int cycle = false;
+
+		for (int i = 0 ;i < size; i++)
+		{
+			for (int j = 0; j < treeSize; j++)
+			{
+				if (tree[j].to == nodes[i].from)
+				{
+					cycle = true;
+					break;
+				}
+			}
+
+			if (!cycle)
+			{
+				idxNode = i;
+			}
+		}
+		now = idxNode;
+
+		//add node to tree
+		node* tempTree = new node[treeSize + 1];
+
+		for (int i = 0; i < treeSize; i++)
+		{
+			tempTree[i] = tree[i];
+		}
+		tempTree[treeSize] = nodes[idxNode];
+
+		tree = tempTree;
+		delete[] tempTree;
+
+		//delete nodes from 0 to idxNode
+		size = size - idxNode - 1;
+		node* tempN = new node[size];
+
+		for (int i = 0 ; i < size; i++)
+		{
+			tempN[i] = nodes[i + idxNode + 1];
+		}
+
+		nodes = tempN;
+		delete[] tempN;
+	};
+
+
+	std::cout << "Drzewo: " << std::endl;
+	int weight = 0;
+	for(int i = 0; i < treeSize; i++)
+	{
+		std::cout << tree[i].from << " -> " << tree[i].to << " [" << tree[i].weight << "]" << std::endl;
+		weight += tree[i].weight;
+	}
+
+	return weight;
 }
 
 void List::show()

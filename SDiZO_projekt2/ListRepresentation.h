@@ -27,6 +27,7 @@ public:
 	bool doesEdgeExists(int fromVertex, int toVertex);
 
 	int dijkstra(int from, int to);
+	int prim();
 
 
 	void show();

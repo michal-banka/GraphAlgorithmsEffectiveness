@@ -11,9 +11,9 @@ BidirectionalListManagement::BidirectionalListManagement()
 
 BidirectionalListManagement::BidirectionalListManagement(int count)
 {
-	this->head = nullptr;
-	this->tail = nullptr;
-	this->count = 0;
+	this->head = NULL;
+	this->tail = NULL;
+	this->count = count;
 
 	for (int i = 0 ; i < count; i++)
 	{
@@ -24,10 +24,9 @@ BidirectionalListManagement::BidirectionalListManagement(int count)
 
 BidirectionalListManagement::~BidirectionalListManagement()
 {
-	deleteAll(0);
+	//deleteAll(0);
 	delete head;
 	delete tail;
-	
 }
 
 BidirectionalList * BidirectionalListManagement::getHead()

@@ -1,18 +1,18 @@
 #pragma once
 #include "MatrixRepresentation.h"
 #include "ListRepresentation.h"
+#include "Graph.h"
 
 class Menu
 {
 private:
-	Matrix matrixRepresentation;
-
+	Graph graph;
 public:
 	Menu();
+	Menu(bool directed);
 	~Menu();
 
-	void showMenu();
-	void minimalSpanningTree();
+	void menu();
 	
 	// possible change of idea
 	//void matrixMenu();

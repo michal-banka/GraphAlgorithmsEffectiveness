@@ -24,7 +24,9 @@ Graph::Graph(List listRepresentation, Matrix matrixRepresentation, bool directed
 	this->directed = directed;
 }
 
-Graph::~Graph(){}
+Graph::~Graph()
+{
+}
 
 void Graph::addVertex()
 {
@@ -136,6 +138,11 @@ void Graph::showRepresentations()
 	matrixRepresentation.show();
 }
 
+bool Graph::isDirected()
+{
+	return this->directed;
+}
+
 void Graph::fillRandom()
 {
 	int ver = -1, den = -1, weight = -1;
@@ -165,6 +172,7 @@ void Graph::fillRandom()
 
 void Graph::fillRandom(int vertices, int density, int weightRange)
 {
+	// todo
 	int edges = (double) density / 100 * vertices;
 	int fromVertex = 0, toVertex = 0;
 
@@ -187,23 +195,6 @@ void Graph::fillRandom(int vertices, int density, int weightRange)
 
 		int k = 0;
 
-		//not the best method
-		/*for (int i = 0; i < vertices; i++)
-		{
-			for (int j = 0; j < vertices; j++)
-			{
-				std::cout << k++ << std::endl;
-				if (listRepresentation.doesEdgeExists(fromVertex, toVertex)) //|| toVertex == fromVertex)
-				{
-					toVertex = (toVertex + 1) % vertices;
-				}
-				else
-				{
-					break;
-				}
-			}
-			fromVertex = (fromVertex + 1) % vertices;
-		};*/
 
 		addEdge(fromVertex,toVertex,rand()%weightRange + 1);
 	}
@@ -283,4 +274,9 @@ void Graph::dijkstra(int from, int to)
 	listRepresentation.dijkstra(from, to);
 	std::cout << "Macierz: \n";
 	matrixRepresentation.dijkstra(from, to,directed);
+}
+
+void Graph::prim()
+{
+	listRepresentation.prim();
 }

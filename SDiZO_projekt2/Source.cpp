@@ -8,15 +8,11 @@ int main()
 	//TODO
 	//change language of Bidircetional classes' methods to Polish (?)
 	//create algorithms in Graph class
-	//create menu
+	//check destructors and deleting temps
 	//do graph to be consistent (!)
-	Graph graph(true);
-	graph.showRepresentations();
-	//graph.fillRandom();
-	graph.fillFromFile("data2.txt");
-	graph.showRepresentations();
-	graph.dijkstra();
 
+	Menu menu;
+	menu.menu();
 	std::cin.get();
 	return 0;
 }

@@ -24,6 +24,8 @@ public:
 	void removeEdge(int fromVertex, int toVertex);
 
 	void showRepresentations();
+	void clearAll();
+	bool isDirected();
 
 	void fillRandom();
 	void fillRandom(int vertices, int density, int weightRange);
@@ -32,5 +34,6 @@ public:
 
 	void dijkstra();
 	void dijkstra(int from, int to);
+	void prim();
 };
 
