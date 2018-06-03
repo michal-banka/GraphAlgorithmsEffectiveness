@@ -216,6 +216,9 @@ void Graph::fillFromFile(std::string filename)
 {
 	//txt file must have specific format
 	//as mentioned in project documentation
+	listRepresentation = List();
+	matrixRepresentation = Matrix();
+
 	int vertices = 0;
 	int toVertex = 0, fromVertex = 0, weight = 0;
 	
@@ -257,14 +260,14 @@ void Graph::dijkstra()
 		std::cout << "Podaj wierzcholek poczatkowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
 		std::cin >> from;
 		std::cin.get();
-	} while (to < 0 || to > matrixRepresentation.getVertices() - 1);
+	} while (from < 0 || from > matrixRepresentation.getVertices() - 1);
 
 	do
 	{
 		std::cout << "Podaj wierzcholek koncowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
 		std::cin >> to;
 		std::cin.get();
-	} while (from < 0 || from > matrixRepresentation.getVertices() - 1);
+	} while (to < 0 || to > matrixRepresentation.getVertices() - 1);
 	dijkstra(from,to);
 }
 
@@ -278,5 +281,21 @@ void Graph::dijkstra(int from, int to)
 
 void Graph::prim()
 {
-	listRepresentation.prim();
+	int from = 0;
+	do
+	{
+		std::cout << "Podaj wierzcholek poczatkowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
+		std::cin >> from;
+		std::cin.get();
+	} while (from < 0 || from > matrixRepresentation.getVertices() - 1);
+
+	prim(from);
+}
+
+void Graph::prim(int from)
+{
+	int distanceList = listRepresentation.prim(from);
+	int distanceMatrix = matrixRepresentation.prim(from);
+	std::cout << "Droga drzewa - Lista: " << distanceList << std::endl;
+	std::cout << "Droga drzewa - Macierz: " << distanceMatrix << std::endl;
 }

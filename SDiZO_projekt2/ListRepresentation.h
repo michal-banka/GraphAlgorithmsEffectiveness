@@ -28,7 +28,7 @@ public:
 
 	int dijkstra();
 	int dijkstra(int from, int to);
-	int prim();
+	
 	int prim(int from);
 
 

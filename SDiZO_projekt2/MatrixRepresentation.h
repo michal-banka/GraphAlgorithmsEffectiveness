@@ -14,6 +14,7 @@ public:
 
 	int getVertices();
 	int getEdges();
+	int numberOfEdgesOf(int vertex);
 
 	void addVertex();
 	void removeVertex();
@@ -27,5 +28,6 @@ public:
 	void show();
 
 	int dijkstra(int from, int to, bool directed);
+	int prim(int from);
 };
 

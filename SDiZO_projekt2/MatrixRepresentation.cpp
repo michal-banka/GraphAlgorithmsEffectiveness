@@ -58,6 +58,17 @@ int Matrix::getEdges()
 	return this->edges;
 }
 
+int Matrix::numberOfEdgesOf(int vertex)
+{
+	int sum = 0;
+	for (int i = 0; i < edges; i++)
+	{
+		if (tab[i][vertex] != 0) sum++;
+	}
+
+	return sum;
+}
+
 void Matrix::addVertex()
 {
 	if (edges == 0)
@@ -440,4 +451,151 @@ int Matrix::dijkstra(int from, int to, bool directed)
 		delete[] nodes;
 		return nodes[to].distance;
 	}
+}
+
+int Matrix::prim(int from)
+{
+	struct node
+	{
+		int from = -1;
+		int to = -1;
+		int weight = 0;
+	};
+	//index of vertex from which we start making tree
+	int now = from;
+	//size of node array
+	int size = 0;
+	//size of tree array
+	int treeSize = 0;
+
+	int idxNode = 0;
+	int cycle = false;
+
+	node* tree = new node[treeSize];
+	node* nodes = new node[size];
+	node* tempNodes = new node[size + numberOfEdgesOf(now)];
+
+	while (size > 0 || treeSize == 0)
+	{
+		bool inserted = false;
+
+		//inserting new edge
+		for (int i = 0; i < edges; i++)
+		{
+			//when edge found
+			if (tab[i][now] != 0)
+			{
+				inserted = false;
+				tempNodes = new node[size + numberOfEdgesOf(now)];
+
+				//add new edges to nodes array
+				for (int j = 0; j < size; j++)
+				{
+					if (nodes[j].weight > abs(tab[i][now]) && !inserted)
+					{
+						//find the other end of edge
+						for(int k = 0 ;k < vertices; k++)
+						{
+							//and add to nodes array
+							if (tab[i][k] != 0 && k != now)
+							{
+								tempNodes[j + 1] = { nodes[j].from, nodes[j].to, nodes[j].weight };
+								tempNodes[j] = { now, k,  abs(tab[i][now])};
+								inserted = true;
+							}
+						}
+
+						
+					}
+					else if (!inserted)
+					{
+						tempNodes[j] = { nodes[j].from, nodes[j].to, nodes[j].weight };
+					}
+					else
+					{
+						tempNodes[j + 1] = { nodes[j].from, nodes[j].to, nodes[j].weight };
+					}
+				}
+				if (!inserted)
+				{
+					//find the other end of edge
+					for (int k = 0; k < vertices; k++)
+					{
+						//and add to nodes array
+						if (tab[i][k] != 0 && k != now)
+						{
+							tempNodes[size] = { now, k,  abs(tab[i][now]) };
+							inserted = true;
+						}
+					}
+				}
+				size++;
+				nodes = tempNodes;
+			}
+		}
+
+		// set next node to check
+		idxNode = -1;
+		cycle = false;
+
+		for (int i = 0; i < size; i++)
+		{
+			cycle = false;
+			for (int j = 0; j < treeSize; j++)
+			{
+				if (tree[j].from == nodes[i].to)
+				{
+					cycle = true;
+					break;
+				}
+			}
+
+			if (!cycle)
+			{
+				idxNode = i;
+				break;
+			}
+		}
+		now = nodes[idxNode].to;
+
+		//add node to tree
+		node* tempTree = new node[treeSize + 1];
+
+		for (int i = 0; i < treeSize; i++)
+		{
+			tempTree[i] = tree[i];
+		}
+		tempTree[treeSize] = nodes[idxNode];
+
+		treeSize++;
+		tree = tempTree;
+
+		//delete nodes from 0 to idxNode
+		size = size - idxNode - 1;
+		node* tempN = new node[size];
+		for (int i = 0; i < size; i++)
+		{
+			tempN[i] = nodes[i + idxNode + 1];
+		}
+		nodes = tempN;
+
+		//if all vertices are on tree finish
+		if (treeSize == vertices - 1) break;
+	};
+
+
+	//show tree
+	std::cout << "Drzewo - Macierz: " << std::endl;
+	int weight = 0;
+	for (int i = 0; i < treeSize; i++)
+	{
+		std::cout << tree[i].from << " -> " << tree[i].to << " [" << tree[i].weight << "]" << std::endl;
+		weight += tree[i].weight;
+	}
+
+	delete[] tree;
+	delete[] nodes;
+	delete[] tempNodes;
+
+	return weight;
 }

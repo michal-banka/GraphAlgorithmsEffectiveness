@@ -35,5 +35,6 @@ public:
 	void dijkstra();
 	void dijkstra(int from, int to);
 	void prim();
+	void prim(int from);
 };
 

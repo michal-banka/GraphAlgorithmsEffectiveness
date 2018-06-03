@@ -47,8 +47,8 @@ void Menu::menu()
 		std::cout << "2. Wypelnij graf z pliku" << std::endl;
 		std::cout << "3. Wypenij graf losowo" << std::endl;
 		std::cout << "4. Algorytm Dijkstry" << std::endl;
-		std::cout << "5. Zmien forme grafu" << std::endl;
-		std::cout << "6. Prim" << std::endl;
+		std::cout << "5. Algorytm Prima" << std::endl;
+		std::cout << "6. Zmien forme grafu" << std::endl;
 		std::cout << choices << ". Wyjdz" << std::endl;
 
 		do
@@ -61,6 +61,8 @@ void Menu::menu()
 		switch (choice1)
 		{
 		case 1:
+			std::cout << "======================================" << std::endl;
+			std::cout << "Wybrana forma grafu: " << (graph.isDirected() ? "SKIEROWANY" : "NIESKIEROWANY") << std::endl;
 			graph.showRepresentations();
 			break;
 		case 2:
@@ -73,11 +75,12 @@ void Menu::menu()
 			graph.dijkstra();
 			break;
 		case 5:
+			graph.prim();
+			break;
+		case 6:
 			this->graph = Graph(!graph.isDirected());
 			std::cout << "Zmieniono formê grafu na " << (graph.isDirected() ? "skierowany" : "nieskierowany") << std::endl;
 			break;
-		case 6:
-			graph.prim();
 		default:
 			break;
 		}
