@@ -208,6 +208,26 @@ bool List::doesEdgeExists(int fromVertex, int toVertex)
 	return list[fromVertex].findElementPos(toVertex) >= 0;
 }
 
+int List::dijkstra()
+{
+	int v1 = -1, v2 = -1;
+	do
+	{
+		std::cout << "Podaj numer poczatkowego wierzcholka (0 - " << vertices - 1 << "):\t";
+		std::cin >> v1;
+		std::cin.get();
+	} while (v1 < 0 || v1 > vertices);
+
+	do
+	{
+		std::cout << "Podaj numer koncowego wierzcholka (0 - " << vertices - 1 << "):\t";
+		std::cin >> v2;
+		std::cin.get();
+	} while (v2 < 0 || v2 > vertices);
+
+	dijkstra(v1, v2);
+}
+
 int List::dijkstra(int from, int to)
 {
 	if (vertices <= 0 || from < 0 || to < 0 || from > vertices -1 || to > vertices - 1) return -1;
@@ -220,7 +240,7 @@ int List::dijkstra(int from, int to)
 	};
 
 	//construct list to inform which vertex were checked, 
-	//it could be simple array but I don't use STL and it's already implemented
+	//it could be simple array but I don't use STL becouse of requirements of project and list is already implemented
 	//what is more, list has better times of adding to end
 	//constructor fullfil list with 0 as value
 	//0 - not checked, 1 - checked
@@ -290,7 +310,7 @@ int List::dijkstra(int from, int to)
 	}
 }
 
-int List::prim()
+int List::prim(int from)
 {
 	struct node
 	{
@@ -298,14 +318,17 @@ int List::prim()
 		int to = -1;
 		int weight = 0;
 	};
-	int now = 0;
+	int now = from;
 	int size = 0;
 	int treeSize = 0;
 	
+	int idxNode = 0;
+	int cycle = false;
+
 	node* tree = new node[treeSize];
 	node* nodes = new node[size];
 	node* tempNodes = new node[size + list[now].getCount()];
-	std::cout << size + list[now].getCount();
+
 
 	BidirectionalList* temp = list[now].getHead();
 
@@ -314,60 +337,88 @@ int List::prim()
 		//delete[] tempNodes;
 		temp = list[now].getHead();
 		std::cout << "NOW = " << now << std::endl;
-		tempNodes = new node[size + list[now].getCount()];
-		bool inserted = false;
 
+		bool inserted = false;
+		
 		while (temp)
 		{
-			std::cin.get();
 
 			inserted = false;
 			int j = 0;
 
+			tempNodes = new node[size + list[now].getCount()];
 			//add new edges
+			std::cout << "size = " << size << std::endl;
 			for(int i = 0 ; i < size; i++)
 			{
-				if (tempNodes[i].weight > temp[now].getWeight() && !inserted)
+				
+				std::cout << "inserted = " << (inserted ? "true" : "false") << std::endl;
+				std::cout << "i = " << i << " , nodes[i].weight = " << nodes[i].weight << " , temp->getWeight() = " << temp->getWeight() << std::endl;
+				/*std::cout << "i = " << i << " , now = " << now << " , temp->getValue() = " << temp->getValue() << " , temp->getWeight() = " << temp->getWeight() << std::endl;
+				std::cout << "i = " << i << " , nodes[i].from = " << nodes[i].from << " , nodes[i].to" << nodes[i].to << " , nodes[i].weight" << nodes[i].weight << std::endl;
+				*/
+				if (nodes[i].weight > temp->getWeight() && !inserted)
 				{
+
+					
+					tempNodes[i + 1] = { nodes[i].from, nodes[i].to, nodes[i].weight };
+					std::cout << "dodawanie nowego" << std::endl;
 					tempNodes[i] = { now, temp->getValue(), temp->getWeight() };
 					inserted = true;
+
+					std::cout << "przepisywanie po dodaniu" << std::endl;
+					//i--;
 				}
 				else if (!inserted)
 				{
-					tempNodes[i] = nodes[i];
+					std::cout << "przepisywanie przed dodaniem" << std::endl;
+					tempNodes[i] = { nodes[i].from, nodes[i].to, nodes[i].weight };
 				}
 				else
 				{
-					tempNodes[i + 1] = nodes[i];
+					std::cout << "przepisywanie po dodaniu" << std::endl;
+					tempNodes[i + 1] = { nodes[i].from, nodes[i].to, nodes[i].weight };
 				}
 			}
 			if (!inserted)
 			{
+				std::cout << "dodawanie na koniec" << std::endl;
 				tempNodes[size] = { now, temp->getValue(), temp->getWeight() };
 				inserted = true;
 			}
+
 			size++;
 			temp = temp->getNext();
 
 			nodes = tempNodes;
+
+			for (int i = 0; i < size; i++)
+			{
+				std::cout << "NODE " << i << ": " << nodes[i].from << " " << nodes[i].to << " " << nodes[i].weight << std::endl;
+			}
 		}
 		
 		//delete[] tempNodes;
 
-		for(int i = 0; i < size; i++)
+		/*for (int i = 0; i < size; i++)
 		{
 			std::cout << "NODE " << i << ": " << nodes[i].from << " " << nodes[i].to << " " << nodes[i].weight << std::endl;
-		}
+		}*/
+
+		
 
 		// set next node to check
-		int idxNode = 0;
-		int cycle = false;
+		idxNode = -1;
+		cycle = false;
+		std::cout << "SZUKANIE NOWEGO WIERZCHOLKA\n";
 
-		for (int i = 0 ;i < size; i++)
+		for (int i = 0; i < size; i++)
 		{
+			cycle = false;
 			for (int j = 0; j < treeSize; j++)
 			{
-				if (tree[j].to == nodes[i].from)
+				std::cout << tree[j].from << " " << nodes[i].to << std::endl;
+				if (tree[j].from == nodes[i].to)
 				{
 					cycle = true;
 					break;
@@ -377,33 +428,49 @@ int List::prim()
 			if (!cycle)
 			{
 				idxNode = i;
+				break;
 			}
 		}
-		now = idxNode;
+		now = nodes[idxNode].to;
+		
+		
+
+		std::cout << "newNow = " << now << std::endl;
 
 		//add node to tree
 		node* tempTree = new node[treeSize + 1];
-
+		
 		for (int i = 0; i < treeSize; i++)
 		{
 			tempTree[i] = tree[i];
 		}
 		tempTree[treeSize] = nodes[idxNode];
-
+		
+		treeSize++;
 		tree = tempTree;
-		delete[] tempTree;
+		//delete[] tempTree;
+
+		std::cout << std::endl;
+		for (int i = 0; i < treeSize; i++)
+		{
+			std::cout << "tree " << i << ": " << tree[i].from << " " << tree[i].to << " " << tree[i].weight << std::endl;
+		}
 
 		//delete nodes from 0 to idxNode
 		size = size - idxNode - 1;
 		node* tempN = new node[size];
-
-		for (int i = 0 ; i < size; i++)
+		for (int i = 0; i < size; i++)
 		{
 			tempN[i] = nodes[i + idxNode + 1];
 		}
-
 		nodes = tempN;
-		delete[] tempN;
+		//delete[] tempN;
+
+		//if all vertices are on tree finish
+		if (treeSize == vertices -1)
+		{
+			break;
+		}
 	};
 
 
