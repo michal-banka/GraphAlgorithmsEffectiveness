@@ -273,10 +273,9 @@ void Graph::dijkstra()
 
 void Graph::dijkstra(int from, int to)
 {
-	std::cout << "ALGORYTM DIJKSTRY \nLista: \n";
-	listRepresentation.dijkstra(from, to);
-	std::cout << "Macierz: \n";
-	matrixRepresentation.dijkstra(from, to,directed);
+	std::cout << "Algorytm Dijkstry:" << std::endl;
+	std::cout << "\tMacierz - dystans: " << matrixRepresentation.dijkstra(from, to, directed) << std::endl;
+	std::cout << "\tLista - dystans: " << listRepresentation.dijkstra(from, to) << std::endl;
 }
 
 void Graph::prim()
@@ -294,9 +293,9 @@ void Graph::prim()
 
 void Graph::prim(int from)
 {
-	int distanceList = listRepresentation.prim(from);
-	int distanceMatrix = matrixRepresentation.prim(from);
-	std::cout << "Droga drzewa1 - Lista: " << distanceList << std::endl;
-	std::cout << "Droga drzewa1 - Lista: " << listRepresentation.prim2(from);
-	std::cout << "Droga drzewa - Macierz: " << distanceMatrix << std::endl;
+	std::cout << "Algorytm Prima:" << std::endl;
+	std::cout << "\tMacierz - algorytm efektywny - waga drzewa: " << matrixRepresentation.prim2(from) << std::endl;
+	std::cout << "\tMacierz - algorytm nieefektywny - waga drzewa: " << matrixRepresentation.prim(from) << std::endl;
+	std::cout << "\tLista - algorytm efektywny - waga drzewa: " << listRepresentation.prim2(from) << std::endl;
+	std::cout << "\tLista - algorytm nieefektywny - waga drzewa: " << listRepresentation.prim(from) << std::endl;
 }

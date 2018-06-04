@@ -458,17 +458,18 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	}
 	else
 	{
+		int dist = nodes[to].distance;
 		now = to;
-		std::cout << "DROGA: ";
+		std::cout << "Droga: ";
 		while (now != from)
 		{
 			std::cout << now << ", ";
 			now = nodes[now].previous;
 		}
 		std::cout << from << std::endl;
-		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
+		std::cout << "Dystans: " << nodes[to].distance << std::endl;
 		delete[] nodes;
-		return nodes[to].distance;
+		return dist;
 	}
 }
 
@@ -604,7 +605,6 @@ int Matrix::prim(int from)
 
 
 	//show tree
-	std::cout << "Drzewo - Macierz: " << std::endl;
 	int weight = 0;
 	for (int i = 0; i < treeSize; i++)
 	{
@@ -643,17 +643,28 @@ int Matrix::prim2(int from)
 	while (checked.doesValueExist(0))
 	{
 		//check all edges of vertice now
-		while (temp)
+		for (int i = 0; i < edges; i++)
 		{
-			std::cout << verticesPrim[temp->getValue()].key << " " << temp->getWeight() << std::endl;
-			std::cin.get();
-			//if key of vertice is bigger than weight of edge (now, temp->value()) set key
-			if (verticesPrim[temp->getValue()].key > temp->getWeight() && checked[temp->getValue()]->getValue() != 1)
+			if (tab[i][now] != 0)
 			{
-				verticesPrim[temp->getValue()] = { temp->getWeight(), now };
+				//find the other end of this edge
+				int end = 0;
+				for (int j = 0; j < vertices; j++)
+				{
+					if (tab[i][j] != 0 && j != now)
+					{
+						end = j;
+						break;
+					}
+				}
+
+				//if key of vertice is bigger than weight of edge (now, temp->value()) set key
+				if (verticesPrim[end].key > abs(tab[i][end]) && checked[end]->getValue() != 1)
+				{
+					verticesPrim[end] = { abs(tab[i][end]), now };
+				}
+				checked[now]->setValue(1);
 			}
-			checked[now]->setValue(1);
-			temp = temp->getNext();
 		}
 
 		//set new now
@@ -669,10 +680,8 @@ int Matrix::prim2(int from)
 		}
 	}
 
-
-	std::cout << "ALGORYTM PRIMA - Lista: " << std::endl;
 	int dist = 0;
-	for (int i = 0; i < vertices; i++)
+	for (int i = 1; i < vertices; i++)
 	{
 		dist += verticesPrim[i].key;
 		std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;

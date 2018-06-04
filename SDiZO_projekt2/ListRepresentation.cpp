@@ -447,7 +447,6 @@ int List::prim(int from)
 
 
 	//show tree
-	std::cout << "Drzewo - Lista: " << std::endl;
 	int weight = 0;
 	for(int i = 0; i < treeSize; i++)
 	{
@@ -493,8 +492,6 @@ int List::prim2(int from)
 		//check all edges of vertice now
 		while(temp)
 		{
-			std::cout << verticesPrim[temp->getValue()].key << " " << temp->getWeight() << std::endl;
-			std::cin.get();
 			//if key of vertice is bigger than weight of edge (now, temp->value()) set key
 			if (verticesPrim[temp->getValue()].key > temp->getWeight() && checked[temp->getValue()]->getValue() != 1)
 			{
@@ -517,8 +514,6 @@ int List::prim2(int from)
 		}
 	}
 
-
-	std::cout << "ALGORYTM PRIMA - Lista: " << std::endl;
 	int dist = 0;
 	for (int i = 0; i < vertices; i++)
 	{
