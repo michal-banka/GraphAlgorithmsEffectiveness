@@ -296,6 +296,7 @@ void Graph::prim(int from)
 {
 	int distanceList = listRepresentation.prim(from);
 	int distanceMatrix = matrixRepresentation.prim(from);
-	std::cout << "Droga drzewa - Lista: " << distanceList << std::endl;
+	std::cout << "Droga drzewa1 - Lista: " << distanceList << std::endl;
+	std::cout << "Droga drzewa1 - Lista: " << listRepresentation.prim2(from);
 	std::cout << "Droga drzewa - Macierz: " << distanceMatrix << std::endl;
 }

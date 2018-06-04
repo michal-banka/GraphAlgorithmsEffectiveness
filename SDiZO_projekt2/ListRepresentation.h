@@ -30,6 +30,7 @@ public:
 	int dijkstra(int from, int to);
 	
 	int prim(int from);
+	int prim2(int from);
 
 
 	void show();

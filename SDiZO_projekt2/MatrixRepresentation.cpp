@@ -618,3 +618,65 @@ int Matrix::prim(int from)
 
 	return weight;
 }
+
+int Matrix::prim2(int from)
+{
+	BidirectionalListManagement checked = BidirectionalListManagement(vertices);
+	struct primVertex
+	{
+		int key = 0;
+		int previous = -1;
+	};
+
+	int now = from;
+
+	primVertex* verticesPrim = new primVertex[vertices];
+
+	verticesPrim[0] = { 0, 0 };
+
+	for (int i = 1; i < vertices; i++)
+	{
+		verticesPrim[i] = { 1000, -1 };
+	}
+
+	//check all vertices
+	while (checked.doesValueExist(0))
+	{
+		//check all edges of vertice now
+		while (temp)
+		{
+			std::cout << verticesPrim[temp->getValue()].key << " " << temp->getWeight() << std::endl;
+			std::cin.get();
+			//if key of vertice is bigger than weight of edge (now, temp->value()) set key
+			if (verticesPrim[temp->getValue()].key > temp->getWeight() && checked[temp->getValue()]->getValue() != 1)
+			{
+				verticesPrim[temp->getValue()] = { temp->getWeight(), now };
+			}
+			checked[now]->setValue(1);
+			temp = temp->getNext();
+		}
+
+		//set new now
+		int min = 1000;
+
+		for (int i = 1; i < vertices; i++)
+		{
+			if (verticesPrim[i].key < min && checked[i]->getValue() == 0)
+			{
+				min = verticesPrim[i].key;
+				now = i;
+			}
+		}
+	}
+
+
+	std::cout << "ALGORYTM PRIMA - Lista: " << std::endl;
+	int dist = 0;
+	for (int i = 0; i < vertices; i++)
+	{
+		dist += verticesPrim[i].key;
+		std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+	}
+
+	return dist;
+}
