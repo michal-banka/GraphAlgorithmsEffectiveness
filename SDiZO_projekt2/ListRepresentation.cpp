@@ -107,6 +107,23 @@ void List::removeVertex(int index)
 	list = temp;
 }
 
+void List::editEdge(int from, int to, int newWeight)
+{
+	BidirectionalList* temp = list[from].getHead();
+	while(temp)
+	{
+		if (temp->getValue() == to)
+		{
+			temp->setValue(newWeight);
+			delete temp;
+			return;
+		}
+		temp = temp->getNext();
+	}
+	delete temp;
+	std::cout << "Nie ma takiej krawedzi." << std::endl;
+}
+
 void List::addEdge()
 {
 	int v1 = -1, v2 = -1, w = -1, d = -1;

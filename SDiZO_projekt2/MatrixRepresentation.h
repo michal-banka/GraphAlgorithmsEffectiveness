@@ -19,7 +19,7 @@ public:
 	void addVertex();
 	void removeVertex();
 	void removeVertex(int n);
-	
+	void editEdge(int from, int to, int newWeight);
 	void addEdge();
 	void addEdge(int fromVertex, int toVertex, int weight, bool directed);
 	void removeEdge();

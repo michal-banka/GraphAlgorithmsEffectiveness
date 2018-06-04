@@ -175,6 +175,25 @@ void Matrix::removeVertex(int n)
 	delete[] temp;*/
 }
 
+void Matrix::editEdge(int from, int to, int newWeight)
+{
+	for(int i = 0 ;i < edges; i++)
+	{
+		if (tab[i][from] != 0 && tab[i][to] != 0)
+		{
+			if (tab[i][from] < 0) tab[i][from] = -newWeight;
+			else tab[i][from] = newWeight;
+
+			if (tab[i][to] < 0) tab[i][to] = -newWeight;
+			else tab[i][to] = to;
+
+			return;
+		}
+	}
+
+	std::cout << "Nie ma takiej krawedzi." << std::endl;
+}
+
 void Matrix::addEdge()
 {
 	int v1 = -1, v2 = -1, w = -1, d = -1;
