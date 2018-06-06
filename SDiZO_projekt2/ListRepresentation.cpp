@@ -168,6 +168,7 @@ void List::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 	//any index of vertex doesn't exist
 	//this edge already exists
 
+
 	if (fromVertex < 0 || fromVertex > vertices - 1 || toVertex < 0 ||
 		toVertex > vertices - 1 || vertices <= 1 || weight <= 0 || list[fromVertex].findElementPos(toVertex) != -1 ||
 		toVertex == fromVertex) return;
@@ -274,12 +275,13 @@ int List::dijkstra(int from, int to)
 
 	nodes[from].distance = 0;
 	nodes[from].previous = 0;
+	BidirectionalList* temp = list[now].getHead();
 
 	//now we check every vertex
 	while(checked.doesValueExist(0))
 	{
-		BidirectionalList* temp = list[now].getHead();
-
+		
+		temp = list[now].getHead();
 		//check every edge of vertex
 		while(temp)
 		{
@@ -292,7 +294,6 @@ int List::dijkstra(int from, int to)
 			temp = temp->getNext();
 		}
 		checked[now]->setValue(1);
-		delete temp;
 
 		//find node with the smallest node distance which has NOT been checked yet
 		int min = 1000;
@@ -307,23 +308,29 @@ int List::dijkstra(int from, int to)
 		}
 	}
 
+	delete temp;
+
 	if (nodes[to].previous == -1)
 	{
 		std::cout << "Wierzcholek nie polaczony z wierzcholkiem poczatkowym." << std::endl;
+		delete[] nodes;
 		return -1;
 	}
 	else
 	{
-		now = to;
-		std::cout << "DROGA: ";
-		while(now != from)
+		//WRITE PATH - due to counting time it is commented now
+
+		int dist = nodes[to].distance;
+		/*now = to;
+		std::cout << "Droga: ";*/
+		while (now != from)
 		{
-			std::cout << now << ", ";
+			/*std::cout << now << ", ";*/
 			now = nodes[now].previous;
 		}
-		std::cout << from << std::endl;
-		std::cout << "DYSTANS: " << nodes[to].distance << std::endl;
-		return nodes[to].distance;
+		/*std::cout << from << std::endl;*/
+		delete[] nodes;
+		return dist;
 	}
 }
 
@@ -476,12 +483,13 @@ int List::prim2(int from)
 	BidirectionalList* temp = list[now].getHead();
 	primVertex* verticesPrim = new primVertex[vertices];
 
-	verticesPrim[0] = { 0, 0 };
+	
 
-	for (int i = 1 ;i < vertices; i++)
+	for (int i = 0 ;i < vertices; i++)
 	{
 		verticesPrim[i] = { 1000, -1 };
 	}
+	verticesPrim[from] = { 0, from };
 
 	//check all vertices
 	while(checked.doesValueExist(0))
@@ -504,7 +512,7 @@ int List::prim2(int from)
 		//set new now
 		int min = 1000;
 
-		for(int i = 1; i < vertices; i++)
+		for(int i = 0; i < vertices; i++)
 		{
 			if (verticesPrim[i].key < min && checked[i]->getValue() == 0)
 			{
@@ -517,8 +525,11 @@ int List::prim2(int from)
 	int dist = 0;
 	for (int i = 0; i < vertices; i++)
 	{
-		dist += verticesPrim[i].key;
-		std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+		if (i != from)
+		{
+			dist += verticesPrim[i].key;
+			std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+		}
 	}
 
 	return dist;

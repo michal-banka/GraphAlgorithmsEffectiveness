@@ -7,10 +7,13 @@ Graph::Graph()
 	this->listRepresentation = List();
 	this->matrixRepresentation = Matrix();
 	this->directed = false;
+
+	this->timeCounter = TimeCounter();
 }
 
 Graph::Graph(bool directed)
 {
+	this->timeCounter = TimeCounter();
 	this->directed = directed;
 	this->listRepresentation = List();
 	this->matrixRepresentation = Matrix();
@@ -18,6 +21,7 @@ Graph::Graph(bool directed)
 
 Graph::Graph(List listRepresentation, Matrix matrixRepresentation, bool directed)
 {
+	this->timeCounter = TimeCounter();
 	//vertices and edges are taken from matrix representation
 	this->listRepresentation = listRepresentation;
 	this->matrixRepresentation = matrixRepresentation;
@@ -98,7 +102,7 @@ void Graph::addEdge(int fromVertex, int toVertex, int weight)
 
 void Graph::removeEdge()
 {
-	int v1 = -1, v2 = -1, w = -1, d = -1;
+	int v1 = -1, v2 = -1, d = -1;
 	do
 	{
 		std::cout << "Podaj numer poczatkowego wierzcholka (0 - " << matrixRepresentation.getEdges() - 1 << "):\t";
@@ -143,6 +147,17 @@ bool Graph::isDirected()
 	return this->directed;
 }
 
+int Graph::getVertices()
+{
+	return matrixRepresentation.getVertices();
+}
+
+void Graph::editEdge(int from, int to, int weight)
+{
+	listRepresentation.editEdge(from, to, weight);
+	matrixRepresentation.editEdge(from, to, weight);
+}
+
 void Graph::fillRandom()
 {
 	int ver = -1, den = -1, weight = -1;
@@ -155,10 +170,10 @@ void Graph::fillRandom()
 
 	do
 	{
-		std::cout << "Podaj gestosc grafu w procentach (0-100):";
+		std::cout << "Podaj gestosc grafu w procentach (1-99):";
 		std::cin >> den;
 		std::cin.get();
-	} while (den < 0 || den > 100);
+	} while (den <= 0 || den >= 100);
 
 	do
 	{
@@ -167,36 +182,119 @@ void Graph::fillRandom()
 		std::cin.get();
 	} while (weight < 1);
 
+	timeCounter.start();
 	fillRandom(ver, den, weight);
+	std::cout << "Time: " << timeCounter.stop() << " ms." << std::endl;
 }
 
 void Graph::fillRandom(int vertices, int density, int weightRange)
 {
-	// todo
-	int edges = (double) density / 100 * vertices;
-	int fromVertex = 0, toVertex = 0;
+	double d = static_cast<double>(density) / 100;
+	std::cout << "d = " << d << std::endl;
+	int edges = 0;
 
-	for (int i = 0 ;i < vertices; i++)
+	//it's transformed formula for density of graph
+	if (!directed) edges = static_cast<double>(d)*static_cast<double>(vertices)*static_cast<double>(vertices - 1) / 2;
+	else edges = static_cast<double>(d)*static_cast<double>(vertices)*static_cast<double>(vertices - 1);
+	int fromVertex = 0, toVertex = 0;
+	int w = 0;
+	int edgesInMatrix = 0;
+
+	listRepresentation = List();
+	matrixRepresentation = Matrix(vertices, edges);
+
+	listRepresentation.addVertex();
+
+
+	for (int i = 1 ;i < vertices; i++)
 	{
-		addVertex();
+		//randomize weight
+		w = rand() % weightRange + 1;
+		//add vertex i
+		listRepresentation.addVertex();
+		//connect vertex i with previous vertex i - 1
+		//to make graph consistent
+		listRepresentation.addEdge(i - 1, i, w,directed);
+		if (directed)
+		{
+			matrixRepresentation.setValueOnMatrix(edgesInMatrix, i - 1, -w);
+		}
+		else
+		{
+			matrixRepresentation.setValueOnMatrix(edgesInMatrix, i - 1, w);
+		}
+		matrixRepresentation.setValueOnMatrix(edgesInMatrix, i, w);
+
+		//increment index of edge that will be put next
+		edgesInMatrix++;
+
+		if (edgesInMatrix % 100 == 0) std::cout << "DODAWANIE: " << edgesInMatrix << "/" << edges << std::endl;
+		edgesInMatrix++;
 	}
 
-	for (int i = 0 ; i < edges; i++)
+	//add more edges if needed
+	for (int i = 0; i < edges - (vertices - 1); i++)
 	{
-		//rand edge
-		//it's (vertices-1)! possible edges (when directed)
-		//so when we put not more than verticles edges
-		//chance for long randomizing is very low
+		if(edgesInMatrix % 100 == 0) std::cout << "DODAWANIE: " << edgesInMatrix << "/" << edges << std::endl;
+		edgesInMatrix++;
+
+		//find edge which not exist yet and isn't self edge
 		do
 		{
 			fromVertex = rand() % vertices;
 			toVertex = rand() % vertices;
 		} while (listRepresentation.doesEdgeExists(fromVertex, toVertex) || fromVertex == toVertex);
+		
+		//randomize weight
+		w = rand() % weightRange + 1;
 
-		int k = 0;
+		//add edge to list
+		listRepresentation.addEdge(fromVertex, toVertex, w, directed);
+
+		//add edge to matrix
+		if (directed)
+		{
+			matrixRepresentation.setValueOnMatrix(edgesInMatrix, fromVertex, -w);
+		}
+		else
+		{
+			matrixRepresentation.setValueOnMatrix(edgesInMatrix, fromVertex, w);
+		}
+		matrixRepresentation.setValueOnMatrix(edgesInMatrix, toVertex, w);
+		edgesInMatrix++;
 
 
-		addEdge(fromVertex,toVertex,rand()%weightRange + 1);
+		//different method for finding good edge to add
+		/*fromVertex = rand() % vertices;
+		toVertex = rand() % vertices;
+
+		for(int j = 0; j < vertices; j++)
+		{
+			for(int k = 0 ; k < vertices; k++)
+			{
+				if (matrixRepresentation.doesEdgeExist(fromVertex,toVertex) || fromVertex == toVertex)
+				{
+					if (toVertex == vertices - 1) toVertex = 0;
+					else toVertex++;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if (matrixRepresentation.doesEdgeExist(fromVertex, toVertex) || fromVertex == toVertex)
+			{
+				if (fromVertex == vertices - 1) fromVertex = 0;
+				else fromVertex++;
+			}
+			else
+			{
+				break;
+			}
+		}*/
+
+		//addEdge(fromVertex,toVertex,rand()%weightRange + 1);
 	}
 }
 
@@ -274,8 +372,16 @@ void Graph::dijkstra()
 void Graph::dijkstra(int from, int to)
 {
 	std::cout << "Algorytm Dijkstry:" << std::endl;
-	std::cout << "\tMacierz - dystans: " << matrixRepresentation.dijkstra(from, to, directed) << std::endl;
-	std::cout << "\tLista - dystans: " << listRepresentation.dijkstra(from, to) << std::endl;
+
+	timeCounter.start();
+	std::cout << "\tMacierz - dystans:\n" << matrixRepresentation.dijkstra(from, to, directed) << std::endl;
+	std::cout << "CZAS: " << timeCounter.stop() << std::endl;
+
+	timeCounter.reset();
+
+	timeCounter.start();
+	std::cout << "\tLista - dystans:\n" << listRepresentation.dijkstra(from, to) << std::endl;
+	std::cout << "CZAS: " << timeCounter.stop() << std::endl;
 }
 
 void Graph::prim()
@@ -294,8 +400,13 @@ void Graph::prim()
 void Graph::prim(int from)
 {
 	std::cout << "Algorytm Prima:" << std::endl;
-	std::cout << "\tMacierz - algorytm efektywny - waga drzewa: " << matrixRepresentation.prim2(from) << std::endl;
-	std::cout << "\tMacierz - algorytm nieefektywny - waga drzewa: " << matrixRepresentation.prim(from) << std::endl;
-	std::cout << "\tLista - algorytm efektywny - waga drzewa: " << listRepresentation.prim2(from) << std::endl;
-	std::cout << "\tLista - algorytm nieefektywny - waga drzewa: " << listRepresentation.prim(from) << std::endl;
+	std::cout << "\tMacierz - waga drzewa: " << matrixRepresentation.prim2(from) << std::endl;
+	//std::cout << "\tMacierz - algorytm nieefektywny - waga drzewa: " << matrixRepresentation.prim(from) << std::endl;
+	std::cout << "\tLista - waga drzewa: " << listRepresentation.prim2(from) << std::endl;
+	//std::cout << "\tLista - algorytm nieefektywny - waga drzewa: " << listRepresentation.prim(from) << std::endl;
+}
+
+void Graph::test()
+{
+
 }

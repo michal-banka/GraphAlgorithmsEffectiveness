@@ -13,6 +13,13 @@ int main()
 
 	Menu menu;
 	menu.menu();
+
+	/*Matrix matrix;
+	matrix.addVertex();
+	matrix.addVertex();
+	matrix.addEdge(0, 1, 1, 1);*/
+
+	std::cout << "JUZ" << std::endl;
 	std::cin.get();
 	return 0;
 }

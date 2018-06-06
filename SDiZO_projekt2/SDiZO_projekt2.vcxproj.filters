@@ -36,6 +36,9 @@
     <ClCompile Include="Graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TimeCounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libs.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 #include "ListRepresentation.h"
 #include "MatrixRepresentation.h"
+#include "TimeCounter.h"
 
 class Graph
 {
@@ -9,6 +10,7 @@ private:
 	Matrix matrixRepresentation;
 	bool directed;
 
+	TimeCounter timeCounter;
 public:
 	Graph();
 	Graph(bool directed);
@@ -26,6 +28,8 @@ public:
 	void showRepresentations();
 	void clearAll();
 	bool isDirected();
+	int getVertices();
+	void editEdge(int from, int to, int weight);
 
 	void fillRandom();
 	void fillRandom(int vertices, int density, int weightRange);
@@ -36,5 +40,7 @@ public:
 	void dijkstra(int from, int to);
 	void prim();
 	void prim(int from);
+
+	void test();
 };
 

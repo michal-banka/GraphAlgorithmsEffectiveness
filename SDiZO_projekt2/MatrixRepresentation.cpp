@@ -10,8 +10,7 @@ Matrix::Matrix()
 	this->vertices = 0;
 	this->edges = 0;
 
-	tab = new int*[edges];
-	
+	this->tab = nullptr;
 }
 
 Matrix::Matrix(int vertices, int edges)
@@ -30,22 +29,42 @@ Matrix::Matrix(int vertices, int edges)
 	}
 }
 
+Matrix::Matrix(int** tab, int vertices, int edges)
+{
+	this->tab = tab;
+	this->vertices = vertices;
+	this->edges = edges;
+}
+
+Matrix::Matrix(const Matrix& m)
+{
+	this->edges = m.edges;
+	this->vertices = m.vertices;
+
+	this->tab = new int*[edges];
+	for (int i = 0; i < edges; i++)
+	{
+		this->tab[i] = new int[vertices];
+	}
+
+	for (int i = 0; i < edges; i++)
+	{
+		for (int j = 0; j < vertices; j++)
+		{
+			this->tab[i][j] = m.tab[i][j];
+		}
+	}
+
+}
+
 Matrix::~Matrix()
 {
-	/*std::cout << "Matrix destructor 1";
-	if (edges == 0)
+	for(int i = 0 ; i < edges; i++)
 	{
-		delete[] this->tab;
-	}
-	else
-	{
-		for (int i = 0; i < edges; i++)
-		{
-			delete[] this->tab[i];
-		}
-		delete[] this->tab;
-	}
-	std::cout << "Matrix destructor 2";*/
+		delete[] tab[i];
+	}	
+	delete[] tab;
+
 }
 
 int Matrix::getVertices()
@@ -58,6 +77,29 @@ int Matrix::getEdges()
 	return this->edges;
 }
 
+void Matrix::setTab(int** tab)
+{
+	this->tab = tab;
+}
+
+void Matrix::setEdges(int edges)
+{
+	this->edges = edges;
+}
+
+void Matrix::setVertices(int vertices)
+{
+	this->vertices = vertices;
+}
+
+void Matrix::setValueOnMatrix(int edge, int vertex, int value)
+{
+	if (edge <= edges - 1 && vertex <= vertices - 1 && edge >= 0 && vertex >= 0)
+	{
+		tab[edge][vertex] = value;
+	}
+}
+
 int Matrix::numberOfEdgesOf(int vertex)
 {
 	int sum = 0;
@@ -67,6 +109,15 @@ int Matrix::numberOfEdgesOf(int vertex)
 	}
 
 	return sum;
+}
+
+bool Matrix::doesEdgeExist(int from, int to)
+{
+	for(int i = 0 ; i < edges; i++)
+	{
+		if (tab[i][from] != 0 && tab[i][to] > 0) return true;
+	}
+	return false;
 }
 
 void Matrix::addVertex()
@@ -84,24 +135,27 @@ void Matrix::addVertex()
 		temp[i] = new int[vertices + 1];
 	}
 
+	//rewrite old array
 	for (int i = 0; i < edges; i++)
 	{
 		for (int j = 0; j < vertices; j++)
 		{
 			temp[i][j] = tab[i][j];
 		}
-		temp[i][vertices - 1] = 0;
+		//and add vertice
+		temp[i][vertices] = 0;
 	}
 
 	this->vertices++;
 
-	tab = temp;
 
-	/*for (int i = 0; i < edges; i++)
+	for (int i = 0; i < edges; i++)
 	{
-		delete[] temp[i];
+		delete[] tab[i];
 	}
-	delete[] temp;*/
+	delete[] tab;
+
+	tab = temp;
 }
 
 void Matrix::removeVertex()
@@ -166,13 +220,14 @@ void Matrix::removeVertex(int n)
 		}
 	}
 
+	for (int i = 0; i < edges; i++)
+	{
+		delete[] tab[i];
+	}
+	delete[] tab;
+
 	tab = temp;
 
-	/*for (int i = 0; i < edges; i++)
-	{
-		delete[] temp[i];
-	}
-	delete[] temp;*/
 }
 
 void Matrix::editEdge(int from, int to, int newWeight)
@@ -237,30 +292,34 @@ void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 		//less than 2 vertices
 		//any index of vertex doesn't exist
 		//this edge already exists
-	if (fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices - 1 || weight <= 0 || vertices <= 1 || fromVertex == toVertex) return;
-	for (int i = 0 ;i < edges; i++)
-	{
-		if ((tab[i][fromVertex] < 0 && tab[i][toVertex] > 0 && directed) || (tab[i][fromVertex] > 0 && tab[i][toVertex] > 0 && !directed)) return;
-	}
+	if (fromVertex > vertices - 1 || fromVertex < 0 || toVertex < 0 || toVertex > vertices || weight <= 0 || vertices <= 1 || fromVertex == toVertex) return;
 
 	this->edges++;
 
 	int** temp = new int*[edges];
-	for (int i = 0; i < edges; i++)
-	{
-		temp[i] = new int[vertices];
-	}
-
-	//rewrite tab to temp
+	//O(E)
 	for (int i = 0; i < edges - 1; i++)
 	{
+		temp[i] = new int[vertices];
+
 		for (int j = 0; j < vertices; j++)
 		{
 			temp[i][j] = tab[i][j];
 		}
 	}
+	temp[edges - 1] = new int[vertices];
+
+	//rewrite tab to temp -> new version: rewrite while alocating memory, one loop less
+	/*for (int i = 0; i < edges - 1; i++)
+	{
+		for (int j = 0; j < vertices; j++)
+		{
+			temp[i][j] = tab[i][j];
+		}
+	}*/
 
 	//fill new edge with 0
+	//O(V)
 	for (int i = 0; i < vertices; i++)
 	{
 		temp[edges - 1][i] = 0;
@@ -277,13 +336,13 @@ void Matrix::addEdge(int fromVertex, int toVertex, int weight, bool directed)
 	}
 	temp[edges - 1][toVertex] = weight;
 
-	tab = temp;
-
-	/*for (int i = 0; i < edges; i++)
+	for (int i = 0; i < edges - 1; i++)
 	{
-		delete[] temp[i];
+		delete[] tab[i];
 	}
-	delete[] temp;*/
+	delete[] tab;
+
+	tab = temp;
 }
 
 void Matrix::removeEdge()
@@ -341,19 +400,20 @@ void Matrix::removeEdge(int fromVertex, int toVertex, bool directed)
 			{
 				temp[j - 1] = tab[j];
 			}
-			tab = temp;
 
-			/*for (int i = 0; i < edges; i++)
+			for (int i = 0; i < edges; i++)
 			{
-				delete[] temp[i];
+				delete[] tab[i];
 			}
-			delete[] temp;*/
+			delete[] tab;
+
+			tab = temp;
 
 			return;
 		}
 	}
 
-	std::cout << "Nie znaleziono takiej krawêdzi" << std::endl;
+	std::cout << "Nie znaleziono takiej krawedzi" << std::endl;
 }
 
 void Matrix::show()
@@ -414,6 +474,7 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	//now we check every vertex
 	while (checked.doesValueExist(0))
 	{
+		//checked.showList();
 		for(int i = 0 ;i < edges; i++)
 		{
 			//first find edge connected to given fromVertex
@@ -459,15 +520,14 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	else
 	{
 		int dist = nodes[to].distance;
-		now = to;
-		std::cout << "Droga: ";
+		/*now = to;
+		std::cout << "Droga: ";*/
 		while (now != from)
 		{
-			std::cout << now << ", ";
+			/*std::cout << now << ", ";*/
 			now = nodes[now].previous;
 		}
-		std::cout << from << std::endl;
-		std::cout << "Dystans: " << nodes[to].distance << std::endl;
+		/*std::cout << from << std::endl;*/
 		delete[] nodes;
 		return dist;
 	}
@@ -632,12 +692,12 @@ int Matrix::prim2(int from)
 
 	primVertex* verticesPrim = new primVertex[vertices];
 
-	verticesPrim[0] = { 0, 0 };
-
-	for (int i = 1; i < vertices; i++)
+	for (int i = 0; i < vertices; i++)
 	{
 		verticesPrim[i] = { 1000, -1 };
 	}
+
+	verticesPrim[from] = { 0, from };
 
 	//check all vertices
 	while (checked.doesValueExist(0))
@@ -670,7 +730,7 @@ int Matrix::prim2(int from)
 		//set new now
 		int min = 1000;
 
-		for (int i = 1; i < vertices; i++)
+		for (int i = 0; i < vertices; i++)
 		{
 			if (verticesPrim[i].key < min && checked[i]->getValue() == 0)
 			{
@@ -681,11 +741,43 @@ int Matrix::prim2(int from)
 	}
 
 	int dist = 0;
-	for (int i = 1; i < vertices; i++)
+	for (int i = 0; i < vertices; i++)
 	{
-		dist += verticesPrim[i].key;
-		std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+		if (i != from)
+		{
+			dist += verticesPrim[i].key;
+			std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+		}
 	}
 
+	delete[] verticesPrim;
+
 	return dist;
+}
+
+Matrix& Matrix::operator=(const Matrix& m)
+{
+	if (this == &m)
+	{
+		return *this;
+	}
+	
+	this->edges = m.edges;
+	this->vertices = m.vertices;
+
+	this->tab = new int*[edges];
+	for (int i = 0; i < edges; i++)
+	{
+		this->tab[i] = new int[vertices];
+	}
+
+	for (int i = 0; i < edges; i++)
+	{
+		for (int j = 0; j < vertices; j++)
+		{
+			this->tab[i][j] = m.tab[i][j];
+		}
+	}
+
+	return *this;
 }
