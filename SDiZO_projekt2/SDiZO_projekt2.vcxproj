@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="BidirectionalList.cpp" />
     <ClCompile Include="BidirectionalListManagment.cpp" />
+    <ClCompile Include="BinaryHeap.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="ListRepresentation.cpp" />
     <ClCompile Include="MatrixRepresentation.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="BidirectionalList.h" />
     <ClInclude Include="BidirectionalListManagment.h" />
+    <ClInclude Include="BinaryHeap.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Libs.h" />
     <ClInclude Include="ListRepresentation.h" />

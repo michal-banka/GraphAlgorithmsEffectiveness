@@ -32,6 +32,8 @@ public:
 	int prim(int from);
 	int prim2(int from);
 
+	int kruskal();
+
 
 	void show();
 };

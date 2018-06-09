@@ -40,7 +40,7 @@ Menu::~Menu(){}
 void Menu::menu()
 {
 	int choice1 = 0;
-	int choices = 8;
+	int choices = 10;
 
 	do
 	{
@@ -50,8 +50,10 @@ void Menu::menu()
 		std::cout << "3. Wypenij graf losowo" << std::endl;
 		std::cout << "4. Algorytm Dijkstry" << std::endl;
 		std::cout << "5. Algorytm Prima" << std::endl;
-		std::cout << "6. Edytuj graf" << std::endl;
-		std::cout << "7. TESTOWANIE" << std::endl;
+		std::cout << "6. Algorytm Kruskala" << std::endl;
+		std::cout << "7. ---" << std::endl;
+		std::cout << "8. Edytuj graf" << std::endl;
+		std::cout << "9. TESTOWANIE" << std::endl;
 		std::cout << choices << ". Wyjdz" << std::endl;
 
 		do
@@ -81,10 +83,16 @@ void Menu::menu()
 			graph.prim();
 			break;
 		case 6:
-			editMenu();
+			graph.kruskal();
 			break;
 		case 7:
 			//TODO
+			break;
+		case 8:
+			editMenu();
+			break;
+		case 9:
+			graph.test();
 			break;
 		default:
 			break;

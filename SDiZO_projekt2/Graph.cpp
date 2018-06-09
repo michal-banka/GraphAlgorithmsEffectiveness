@@ -190,7 +190,7 @@ void Graph::fillRandom()
 void Graph::fillRandom(int vertices, int density, int weightRange)
 {
 	double d = static_cast<double>(density) / 100;
-	std::cout << "d = " << d << std::endl;
+	//std::cout << "d = " << d << std::endl;
 	int edges = 0;
 
 	//it's transformed formula for density of graph
@@ -227,17 +227,11 @@ void Graph::fillRandom(int vertices, int density, int weightRange)
 
 		//increment index of edge that will be put next
 		edgesInMatrix++;
-
-		if (edgesInMatrix % 100 == 0) std::cout << "DODAWANIE: " << edgesInMatrix << "/" << edges << std::endl;
-		edgesInMatrix++;
 	}
 
 	//add more edges if needed
-	for (int i = 0; i < edges - (vertices - 1); i++)
+	for (int i = edgesInMatrix; i < edges; i++)
 	{
-		if(edgesInMatrix % 100 == 0) std::cout << "DODAWANIE: " << edgesInMatrix << "/" << edges << std::endl;
-		edgesInMatrix++;
-
 		//find edge which not exist yet and isn't self edge
 		do
 		{
@@ -296,6 +290,7 @@ void Graph::fillRandom(int vertices, int density, int weightRange)
 
 		//addEdge(fromVertex,toVertex,rand()%weightRange + 1);
 	}
+	//ok std::cout << "edges = " << edgesInMatrix << std::endl;
 }
 
 void Graph::fillFromFile()
@@ -344,10 +339,33 @@ void Graph::fillFromFile(std::string filename)
 	}
 	else
 	{
-		std::cout << "Blad odczytu pliku" + filename << std::endl;
+		std::cout << "Blad odczytu pliku " << filename << std::endl;
 	}
 
 	read.close();
+}
+
+void Graph::saveTableToFile(std::string filename, std::string header, int rows, int columns, double** tab)
+{
+	std::ofstream save;
+	save.open(filename);
+	if (save.is_open())
+	{
+		save << header << std::endl;
+		for(int i = 0 ;i < rows; i++)
+		{
+			for (int j = 0; j < columns; j++)
+			{
+				save << tab[i][j] << "\t";
+			}
+			save << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Nie udalo sie otworzyc pliku do zapisu: " << filename << std::endl;
+	}
+	save.close();
 }
 
 void Graph::dijkstra()
@@ -371,17 +389,17 @@ void Graph::dijkstra()
 
 void Graph::dijkstra(int from, int to)
 {
-	std::cout << "Algorytm Dijkstry:" << std::endl;
+	//std::cout << "Algorytm Dijkstry:" << std::endl;
 
-	timeCounter.start();
-	std::cout << "\tMacierz - dystans:\n" << matrixRepresentation.dijkstra(from, to, directed) << std::endl;
-	std::cout << "CZAS: " << timeCounter.stop() << std::endl;
+	//timeCounter.start();
+	std::cout << "\tMacierz:\n" << matrixRepresentation.dijkstra(from, to, directed); //<< std::endl;
+	//std::cout << "CZAS: " << timeCounter.stop() << std::endl;
 
-	timeCounter.reset();
+	//timeCounter.reset();
 
-	timeCounter.start();
-	std::cout << "\tLista - dystans:\n" << listRepresentation.dijkstra(from, to) << std::endl;
-	std::cout << "CZAS: " << timeCounter.stop() << std::endl;
+	//timeCounter.start();
+	/*std::cout << "\tLista - dystans:\n" <<*/ listRepresentation.dijkstra(from, to);// << std::endl;
+	//std::cout << "CZAS: " << timeCounter.stop() << std::endl;
 }
 
 void Graph::prim()
@@ -406,7 +424,206 @@ void Graph::prim(int from)
 	//std::cout << "\tLista - algorytm nieefektywny - waga drzewa: " << listRepresentation.prim(from) << std::endl;
 }
 
+void Graph::kruskal()
+{
+	std::cout << "Algorytm Kriskala: " << std::endl;
+	std::cout << "\tLista - waga drzewa: " << listRepresentation.kruskal() << std::endl;
+	std::cout << "\tMacierz - waga drzewa: " << matrixRepresentation.kruskal() << std::endl;
+}
+
 void Graph::test()
 {
+	//TODO
+	//set graph to directed, becouse dijkstra should be tested on directed graph
+	directed = true;
+
+	double** timesDijkstraTab = new double*[4];
+	double** timesDijkstraList = new double*[4];
+	double** timesPrimTab = new double*[4];
+	double** timesPrimList = new double*[4];
+	double** timesKruskalTab = new double*[4];
+	double** timesKruskalList = new double*[4];
+
+	for (int i = 0 ; i < 4; i++)
+	{
+		timesDijkstraList[i] = new double[5];
+		timesDijkstraTab[i] = new double[5];
+		timesPrimList[i] = new double[5];
+		timesPrimTab[i] = new double[5];
+		timesKruskalList[i] = new double[5];
+		timesKruskalTab[i] = new double[5];
+
+		for(int j = 0; j < 5; j++)
+		{
+			timesDijkstraList[i][j] = 0;
+			timesDijkstraTab[i][j] = 0;
+			timesPrimList[i][j] = 0;
+			timesPrimTab[i][j] = 0;
+			timesKruskalList[i][j] = 0;
+			timesKruskalTab[i][j] = 0;
+		}
+	}
+
+	int densities[] = {25, 50, 75, 99};
+	int sizes[] = {25, 50, 75, 100, 125};
+
+	//Dijkstra
+
+	std::cout << "DIJKSTRA TEST:" << std::endl;
+	//check different densities
+	//25, 50, 75, 99
+	for(int i = 0 ;i < 4; i++)
+	{
+		//check different sizes
+		//25,50,75,100,125
+		for (int j = 0; j < 4; j++)
+		{
+			//get 100 samples to get average time later
+			for (int k = 0; k < 100; k++)
+			{
+				std::cout << "Density = " << densities[i] << ", size = " << sizes[j] << " - " << k + 1 << " / 100" << std::endl;
+				fillRandom(sizes[j], densities[i], 50);
+
+				timeCounter.start();
+				matrixRepresentation.dijkstra(0, sizes[j] - 1, directed);
+				timesDijkstraTab[i][j] += timeCounter.stop();
+
+				timeCounter.start();
+				listRepresentation.dijkstra(0, sizes[j] - 1);
+				timesDijkstraList[i][j] += timeCounter.stop();
+			}
+		}
+	}
+
+	directed = false;
+
+	//Prim and Kruskal
+	std::cout << "PRIM TEST:" << std::endl;
+	//check different densities
+	//25, 50, 75, 99
+	for (int i = 0; i < 4; i++)
+	{
+		//check different sizes
+		//25,50,75,100,125
+		for (int j = 0; j < 4; j++)
+		{
+			//get 100 samples to get average time later
+			for (int k = 0; k < 100; k++)
+			{
+				std::cout << "Density = " << densities[i] << ", size = " << sizes[j] << " - " << k + 1 << " / 100" << std::endl;
+				fillRandom(sizes[j], densities[i], 50);
+
+				/*timeCounter.start();
+				matrixRepresentation.prim2(0);
+				timesPrimTab[i][j] += timeCounter.stop();
+
+				timeCounter.start();
+				listRepresentation.prim2(0);
+				timesPrimList[i][j] += timeCounter.stop();*/
+
+				timeCounter.start();
+				matrixRepresentation.kruskal();
+				timesKruskalTab[i][j] += timeCounter.stop();
+
+				timeCounter.start();
+				listRepresentation.kruskal();
+				timesKruskalList[i][j] += timeCounter.stop();
+			}
+		}
+	}
+	//TODO
+	//different alghotims
+
+
+	//show dijkstra matrix
+	std::cout << "Dijkstra average times - Tab" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesDijkstraTab[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("dijkstraMatrix.txt", "Dijkstra total times - Matrix - (divide by 100 to get average)", 4, 5, timesDijkstraTab);
+
+	//show dijkstra list
+	std::cout << "Dijkstra average times - List" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesDijkstraList[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("dijkstraList.txt", "Dijkstra total times - List - (divide by 100 to get average)", 4, 5, timesDijkstraList);
+
+	//show prim list
+	std::cout << "Prim average times - List" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesPrimList[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("primList.txt", "Prim total times - List - (divide by 100 to get average)", 4, 5, timesPrimList);
+
+	//show prim matrix
+	std::cout << "Prim average times - Matrix" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesPrimTab[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("primMatrix.txt", "Prim total times - Matrix - (divide by 100 to get average)", 4, 5, timesPrimTab);
+
+	//show kruskal list
+	std::cout << "Kruskal average times - List" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesKruskalList[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("kruskalList.txt", "Kruskal total times - List - (divide by 100 to get average)", 4, 5, timesKruskalList);
+
+	//show Kruskal matrix
+	std::cout << "Kruskal average times - Matrix" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesKruskalTab[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("kruskalMatrix.txt", "Kruskal total times - Matrix - (divide by 100 to get average)", 4, 5, timesKruskalTab);
+
 
 }

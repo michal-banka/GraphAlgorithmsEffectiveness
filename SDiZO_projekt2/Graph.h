@@ -35,11 +35,13 @@ public:
 	void fillRandom(int vertices, int density, int weightRange);
 	void fillFromFile();
 	void fillFromFile(std::string filename);
+	void saveTableToFile(std::string filename, std::string header, int rows, int columns, double** tab);
 
 	void dijkstra();
 	void dijkstra(int from, int to);
 	void prim();
 	void prim(int from);
+	void kruskal();
 
 	void test();
 };

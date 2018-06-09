@@ -38,6 +38,7 @@ public:
 	int dijkstra(int from, int to, bool directed);
 	int prim(int from);
 	int prim2(int from);
+	int kruskal();
 
 	Matrix& operator= (const Matrix& m);
 };

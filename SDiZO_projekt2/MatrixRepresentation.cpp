@@ -1,8 +1,6 @@
 #include "MatrixRepresentation.h"
-#include <complex.h>
 #include "BidirectionalListManagment.h"
-#include <valarray>
-#include <chrono>
+#include "BinaryHeap.h"
 
 
 Matrix::Matrix()
@@ -746,13 +744,102 @@ int Matrix::prim2(int from)
 		if (i != from)
 		{
 			dist += verticesPrim[i].key;
-			std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+			//std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
 		}
 	}
 
 	delete[] verticesPrim;
 
 	return dist;
+}
+
+int Matrix::kruskal()
+{
+	struct kruskalEdge
+	{
+		int from = -1;
+		int to = -1;
+		int weight = 0;
+	};
+
+	//create list of incostintent trees made out of unconected vertices
+	BidirectionalListManagement checked = BidirectionalListManagement();
+	//create array of all edges
+	//array must be sorted
+	//type of sorting will be heapsort with heap implementation from prevoius project
+
+	//heap will be simple priority queue, we will need only first element to be correct
+	//so heap is fine for that
+	//and it has O(nlogn) of adding new elem, so really fast
+	BinaryHeap priorityQueue = BinaryHeap();
+	for (int i = 0; i< vertices; i++)
+	{
+		checked.addNewElementEnd(i, 0);
+
+		//while (temp)
+		//{
+		//	//i didn't know it's possible :O
+		//	priorityQueue.addToHeap({ i, temp->getValue(), temp->getWeight() });
+		//	temp = temp->getNext();
+		//}
+	}
+
+	int from = 0, to = 0;
+	bool found = false;
+	for (int i = 0; i< edges; i++)
+	{
+		for (int j = 0; j< vertices; j++)
+		{
+			if (!found && tab[i][j] != 0)
+			{
+				from = j;
+				found = true;
+			}
+			else if (found && tab[i][j] != 0)
+			{
+				to = j;
+				found = false;
+				break;
+			}
+		}
+		priorityQueue.addToHeap({ from, to, tab[i][from] });
+		found = false;
+		to = 0, from = 0;
+	}
+
+	//array for final tree
+	BinaryHeap tree = BinaryHeap();
+
+	for (int i = 1; i < priorityQueue.getSize(); i++)
+	{
+		if (checked[priorityQueue.getRoot().from]->getValue() != checked[priorityQueue.getRoot().to]->getValue())
+		{
+			//add edge to tree
+			tree.addToHeap({ priorityQueue.getRoot().from , priorityQueue.getRoot().to , priorityQueue.getRoot().weight });
+			//connect subtrees
+			int subtreeIdx = checked[priorityQueue.getRoot().to]->getValue();
+			for (int j = 0; j < checked.getCount(); j++)
+			{
+				//if number of subtree is the same as second subtree
+				//set this number to number of first subtree
+				if (checked[j]->getValue() == subtreeIdx)
+				{
+					checked[j]->setValue(checked[priorityQueue.getRoot().from]->getValue());
+				}
+			}
+		}
+		priorityQueue.deleteRoot();
+	}
+
+	int distance = 0;
+	//std::cout << "Drzewo: " << std::endl;
+	for (int i = 0; i < tree.getSize(); i++)
+	{
+		distance += tree[i].weight;
+		//std::cout << tree[i].from << "->" << tree[i].to << "[" << tree[i].weight << "]" << std::endl;
+	}
+
+	return distance;
 }
 
 Matrix& Matrix::operator=(const Matrix& m)
