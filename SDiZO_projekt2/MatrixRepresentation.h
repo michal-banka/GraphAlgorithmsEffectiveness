@@ -39,6 +39,7 @@ public:
 	int prim(int from);
 	int prim2(int from);
 	int kruskal();
+	int bellman_ford(int from, int to, bool directed);
 
 	Matrix& operator= (const Matrix& m);
 };

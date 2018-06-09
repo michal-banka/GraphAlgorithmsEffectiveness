@@ -1,0 +1,5 @@
+Dijkstra total times - List - (divide by 100 to get average)
+18.991	0	0	0	0	
+20.3769	0	0	0	0	
+21.9541	0	0	0	0	
+21.8954	0	0	0	0	

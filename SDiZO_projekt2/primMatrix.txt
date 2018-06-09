@@ -1,0 +1,5 @@
+Prim total times - Matrix - (divide by 100 to get average)
+24.559	0	0	0	0	
+31.7672	0	0	0	0	
+39.4846	0	0	0	0	
+46.4488	0	0	0	0	

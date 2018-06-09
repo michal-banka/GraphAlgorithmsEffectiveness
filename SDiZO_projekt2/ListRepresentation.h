@@ -34,6 +34,8 @@ public:
 
 	int kruskal();
 
+	int bellman_ford(int from, int to);
+
 
 	void show();
 };

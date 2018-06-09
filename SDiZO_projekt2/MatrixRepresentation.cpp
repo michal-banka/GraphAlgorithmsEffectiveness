@@ -518,14 +518,14 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	else
 	{
 		int dist = nodes[to].distance;
-		/*now = to;
-		std::cout << "Droga: ";*/
+		now = to;
+		//std::cout << "Droga: ";
 		while (now != from)
 		{
-			/*std::cout << now << ", ";*/
+			//std::cout << now << ", ";
 			now = nodes[now].previous;
 		}
-		/*std::cout << from << std::endl;*/
+		//std::cout << from << std::endl;
 		delete[] nodes;
 		return dist;
 	}
@@ -840,6 +840,84 @@ int Matrix::kruskal()
 	}
 
 	return distance;
+}
+
+int Matrix::bellman_ford(int from, int to, bool directed)
+{
+	struct bfEdge
+	{
+		int distance = 1000;
+		int previous = -1;
+	};
+
+	bfEdge* verticesBF = new bfEdge[vertices];
+	verticesBF[from] = { 0, from };
+	bool test = true;
+	int findTo = 0;
+	int tempFrom = 0;
+	int tempTo = 0;
+	bool found = 0;
+
+	for (int i = 0; i < vertices - 1; i++)
+	{
+		test = true;
+		for (int j = 0; j < edges; j++)
+		{
+			found = false;
+			tempFrom = -1;
+			tempTo = -1;
+			for (int k = 0; k < vertices; k++)
+			{
+
+				if (!found && tab[j][k] < 0)
+				{
+					tempFrom = k;
+					found = true;
+				}
+				else if (!found && tab[j][k] > 0)
+				{
+					tempTo = k;
+					found = true;
+				}
+				else if (found && tab[j][k] < 0 && k != tempTo)
+				{
+					tempFrom = k;
+					test = false;
+					break;
+					
+				}
+				else if (found && tab[j][k] > 0 && k != tempFrom)
+				{
+					tempTo = k;
+					test = false;
+					break;
+				}
+			}
+
+			if (verticesBF[tempFrom].distance + abs(static_cast<double>(tab[j][tempTo])) < verticesBF[tempTo].distance)
+			{
+				test = false;	
+				verticesBF[tempTo].distance = verticesBF[tempFrom].distance + abs(static_cast<double>(tab[j][tempTo]));
+				verticesBF[tempTo].previous = tempFrom;
+			}
+		}
+		if (test) break;
+	}
+
+	int now = to;
+	int dist = verticesBF[now].distance;
+
+	//std::cout << "DROGA" << std::endl;
+	while (now != from)
+	{
+		//std::cout << now << ", ";
+		now = verticesBF[now].previous;
+	}
+	//std::cout << from << std::endl;
+
+	delete[] verticesBF;
+
+	return dist;
 }
 
 Matrix& Matrix::operator=(const Matrix& m)

@@ -1,0 +1,5 @@
+Kruskal total times - Matrix - (divide by 100 to get average)
+59.9129	0	0	0	0	
+108.496	0	0	0	0	
+180.363	0	0	0	0	
+273.066	0	0	0	0	

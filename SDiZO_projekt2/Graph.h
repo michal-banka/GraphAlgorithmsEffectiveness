@@ -42,6 +42,8 @@ public:
 	void prim();
 	void prim(int from);
 	void kruskal();
+	void bellman_ford();
+	void bellman_ford(int from, int to);
 
 	void test();
 };

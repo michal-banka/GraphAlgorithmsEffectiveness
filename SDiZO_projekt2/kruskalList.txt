@@ -1,0 +1,5 @@
+Kruskal total times - List - (divide by 100 to get average)
+106.807	0	0	0	0	
+274.849	0	0	0	0	
+540.547	0	0	0	0	
+887.029	0	0	0	0	

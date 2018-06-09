@@ -51,7 +51,7 @@ void Menu::menu()
 		std::cout << "4. Algorytm Dijkstry" << std::endl;
 		std::cout << "5. Algorytm Prima" << std::endl;
 		std::cout << "6. Algorytm Kruskala" << std::endl;
-		std::cout << "7. ---" << std::endl;
+		std::cout << "7. Algorytm Bellmana-Forda" << std::endl;
 		std::cout << "8. Edytuj graf" << std::endl;
 		std::cout << "9. TESTOWANIE" << std::endl;
 		std::cout << choices << ". Wyjdz" << std::endl;
@@ -86,7 +86,7 @@ void Menu::menu()
 			graph.kruskal();
 			break;
 		case 7:
-			//TODO
+			graph.bellman_ford();
 			break;
 		case 8:
 			editMenu();

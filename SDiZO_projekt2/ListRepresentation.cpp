@@ -319,16 +319,15 @@ int List::dijkstra(int from, int to)
 	else
 	{
 		//WRITE PATH - due to counting time it is commented now
-
 		int dist = nodes[to].distance;
-		/*now = to;
-		std::cout << "Droga: ";*/
+		now = to;
+		//std::cout << "Droga: ";
 		while (now != from)
 		{
-			/*std::cout << now << ", ";*/
+			//std::cout << now << ", ";
 			now = nodes[now].previous;
 		}
-		/*std::cout << from << std::endl;*/
+		//std::cout << from << std::endl;
 		delete[] nodes;
 		return dist;
 	}
@@ -561,13 +560,11 @@ int List::kruskal()
 		temp = list[i].getHead();
 		while(temp)
 		{
-			//i didn't know it's possible :O
 			priorityQueue.addToHeap({ i, temp->getValue(), temp->getWeight() });
 			temp = temp->getNext();
 		}
 	}
-	//priorityQueue.showHeap();
-	delete[] temp;
+	
 
 	//array for final tree
 	BinaryHeap tree = BinaryHeap();
@@ -602,7 +599,66 @@ int List::kruskal()
 		//std::cout << tree[i].from << "->" << tree[i].to << "[" << tree[i].weight << "]" << std::endl;
 	}
 
+	delete[] temp;
 	return distance;
+}
+
+int List::bellman_ford(int from, int to)
+{
+	struct bfEdge
+	{
+		int distance = 1000;
+		int previous = -1;
+	};
+
+	bfEdge* verticesBF = new bfEdge[vertices];
+	verticesBF[from] = { 0, from };
+	bool test = true;
+	int findTo = 0;
+	int tempFrom = 0;
+	int tempTo = 0;
+	bool found = false;
+	BidirectionalList* temp = list[from].getHead();
+
+	for (int i = 0; i < vertices - 1; i++)
+	{
+		test = true;
+		for (int j = 0; j < vertices; j++)
+		{
+			temp = list[j].getHead();
+			tempFrom = j;
+			tempTo = -1;
+			while(temp)
+			{
+				tempTo = temp->getValue();
+
+				if (verticesBF[tempFrom].distance + abs(static_cast<double>(temp->getWeight())) < verticesBF[tempTo].distance)
+				{
+					test = false;
+					verticesBF[tempTo].distance = verticesBF[tempFrom].distance + abs(static_cast<double>(temp->getWeight()));
+					verticesBF[tempTo].previous = tempFrom;
+				}
+				temp = temp->getNext();
+			}
+		}
+		if (test) break;
+	}
+
+	int now = to;
+	int dist = verticesBF[now].distance;
+
+	//std::cout << "DROGA" << std::endl;
+	while (now != from)
+	{
+		//std::cout << now << ", ";
+		now = verticesBF[now].previous;
+	}
+	//std::cout << from << std::endl;
+
+	delete[] verticesBF;
+	delete temp;
+
+	return dist;
 }
 
 void List::show()

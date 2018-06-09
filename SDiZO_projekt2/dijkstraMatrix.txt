@@ -1,0 +1,5 @@
+Dijkstra total times - Matrix - (divide by 100 to get average)
+168.068	0	0	0	0	
+312.714	0	0	0	0	
+464.431	0	0	0	0	
+594.357	0	0	0	0	

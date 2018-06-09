@@ -1,0 +1,5 @@
+Bellman_Ford total times - Matrix - (divide by 100 to get average)
+46.5405	0	0	0	0	
+92.8549	0	0	0	0	
+142.336	0	0	0	0	
+180.375	0	0	0	0	

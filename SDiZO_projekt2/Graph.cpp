@@ -390,16 +390,11 @@ void Graph::dijkstra()
 void Graph::dijkstra(int from, int to)
 {
 	//std::cout << "Algorytm Dijkstry:" << std::endl;
+	int list = listRepresentation.dijkstra(from, to);
+	int matrix = matrixRepresentation.dijkstra(from, to, directed);
 
-	//timeCounter.start();
-	std::cout << "\tMacierz:\n" << matrixRepresentation.dijkstra(from, to, directed); //<< std::endl;
-	//std::cout << "CZAS: " << timeCounter.stop() << std::endl;
-
-	//timeCounter.reset();
-
-	//timeCounter.start();
-	/*std::cout << "\tLista - dystans:\n" <<*/ listRepresentation.dijkstra(from, to);// << std::endl;
-	//std::cout << "CZAS: " << timeCounter.stop() << std::endl;
+	std::cout << "Dystans - Lista = " << list << std::endl;
+	std::cout << "Dystans - Matrix = " << matrix << std::endl;
 }
 
 void Graph::prim()
@@ -431,6 +426,33 @@ void Graph::kruskal()
 	std::cout << "\tMacierz - waga drzewa: " << matrixRepresentation.kruskal() << std::endl;
 }
 
+void Graph::bellman_ford()
+{
+	int to = 0, from = 0;
+	do
+	{
+		std::cout << "Podaj wierzcholek poczatkowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
+		std::cin >> from;
+		std::cin.get();
+	} while (from < 0 || from > matrixRepresentation.getVertices() - 1);
+
+	do
+	{
+		std::cout << "Podaj wierzcholek koncowy (0 - " << matrixRepresentation.getVertices() - 1 << "): ";
+		std::cin >> to;
+		std::cin.get();
+	} while (to < 0 || to > matrixRepresentation.getVertices() - 1);
+	bellman_ford(from, to);
+}
+
+void Graph::bellman_ford(int from, int to)
+{
+	int list = listRepresentation.bellman_ford(from, to);
+	std::cout << "Dystans - Lista: " << list << std::endl;
+	int matrix = matrixRepresentation.bellman_ford(from, to, directed);
+	std::cout << "Dystans - Matrix: " << matrix << std::endl;
+}
+
 void Graph::test()
 {
 	//TODO
@@ -443,6 +465,8 @@ void Graph::test()
 	double** timesPrimList = new double*[4];
 	double** timesKruskalTab = new double*[4];
 	double** timesKruskalList = new double*[4];
+	double** timesBellmanTab = new double*[4];
+	double** timesBellmanList = new double*[4];
 
 	for (int i = 0 ; i < 4; i++)
 	{
@@ -452,6 +476,8 @@ void Graph::test()
 		timesPrimTab[i] = new double[5];
 		timesKruskalList[i] = new double[5];
 		timesKruskalTab[i] = new double[5];
+		timesBellmanList[i] = new double[5];
+		timesBellmanTab[i] = new double[5];
 
 		for(int j = 0; j < 5; j++)
 		{
@@ -461,27 +487,29 @@ void Graph::test()
 			timesPrimTab[i][j] = 0;
 			timesKruskalList[i][j] = 0;
 			timesKruskalTab[i][j] = 0;
+			timesBellmanList[i][j] = 0;
+			timesBellmanTab[i][j] = 0;
 		}
 	}
 
 	int densities[] = {25, 50, 75, 99};
-	int sizes[] = {25, 50, 75, 100, 125};
+	int sizes[] = {20,40,60,80,100};
 
 	//Dijkstra
 
-	std::cout << "DIJKSTRA TEST:" << std::endl;
+	std::cout << "DIJKSTRA AND BELLMAN-FORD TEST:" << std::endl;
 	//check different densities
 	//25, 50, 75, 99
 	for(int i = 0 ;i < 4; i++)
 	{
 		//check different sizes
 		//25,50,75,100,125
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < 5; j++)
 		{
 			//get 100 samples to get average time later
 			for (int k = 0; k < 100; k++)
 			{
-				std::cout << "Density = " << densities[i] << ", size = " << sizes[j] << " - " << k + 1 << " / 100" << std::endl;
+				std::cout << "[DIJKSTRA/BELLMAN-FORD]Density = " << densities[i] << ", size = " << sizes[j] << " - " << k + 1 << " / 100" << std::endl;
 				fillRandom(sizes[j], densities[i], 50);
 
 				timeCounter.start();
@@ -491,6 +519,14 @@ void Graph::test()
 				timeCounter.start();
 				listRepresentation.dijkstra(0, sizes[j] - 1);
 				timesDijkstraList[i][j] += timeCounter.stop();
+
+				timeCounter.start();
+				matrixRepresentation.bellman_ford(0, sizes[j] - 1, directed);
+				timesBellmanTab[i][j] += timeCounter.stop();
+
+				timeCounter.start();
+				listRepresentation.bellman_ford(0, sizes[j] - 1);
+				timesBellmanList[i][j] += timeCounter.stop();
 			}
 		}
 	}
@@ -498,28 +534,28 @@ void Graph::test()
 	directed = false;
 
 	//Prim and Kruskal
-	std::cout << "PRIM TEST:" << std::endl;
+	std::cout << "PRIM AND KRUSKAL TEST:" << std::endl;
 	//check different densities
 	//25, 50, 75, 99
 	for (int i = 0; i < 4; i++)
 	{
 		//check different sizes
 		//25,50,75,100,125
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < 5; j++)
 		{
 			//get 100 samples to get average time later
 			for (int k = 0; k < 100; k++)
 			{
-				std::cout << "Density = " << densities[i] << ", size = " << sizes[j] << " - " << k + 1 << " / 100" << std::endl;
+				std::cout << "[PRIM/KRUSKAL]Density = " << densities[i] << ", size = " << sizes[j] << " - " << k + 1 << " / 100" << std::endl;
 				fillRandom(sizes[j], densities[i], 50);
 
-				/*timeCounter.start();
+				timeCounter.start();
 				matrixRepresentation.prim2(0);
 				timesPrimTab[i][j] += timeCounter.stop();
 
 				timeCounter.start();
 				listRepresentation.prim2(0);
-				timesPrimList[i][j] += timeCounter.stop();*/
+				timesPrimList[i][j] += timeCounter.stop();
 
 				timeCounter.start();
 				matrixRepresentation.kruskal();
@@ -531,9 +567,6 @@ void Graph::test()
 			}
 		}
 	}
-	//TODO
-	//different alghotims
-
 
 	//show dijkstra matrix
 	std::cout << "Dijkstra average times - Tab" << std::endl;
@@ -564,6 +597,36 @@ void Graph::test()
 	}
 
 	saveTableToFile("dijkstraList.txt", "Dijkstra total times - List - (divide by 100 to get average)", 4, 5, timesDijkstraList);
+
+	//show Bellman_Ford matrix
+	std::cout << "Bellman_Ford average times - Tab" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesBellmanTab[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("Bellman_FordMatrix.txt", "Bellman_Ford total times - Matrix - (divide by 100 to get average)", 4, 5, timesBellmanTab);
+
+	//show Bellman_Ford list
+	std::cout << "Bellman_Ford average times - List" << std::endl;
+	std::cout << "\t25\t50\t75\t100\t125" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << densities[i] << ":\t";
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << timesBellmanList[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	saveTableToFile("Bellman_FordList.txt", "Bellman_Ford total times - List - (divide by 100 to get average)", 4, 5, timesBellmanList);
 
 	//show prim list
 	std::cout << "Prim average times - List" << std::endl;
@@ -626,4 +689,25 @@ void Graph::test()
 	saveTableToFile("kruskalMatrix.txt", "Kruskal total times - Matrix - (divide by 100 to get average)", 4, 5, timesKruskalTab);
 
 
+	//destructors
+	for (int i = 0 ; i < 4; i++)
+	{
+		delete[] timesBellmanList[i];
+		delete[] timesBellmanTab[i];
+		delete[] timesDijkstraList[i];
+		delete[] timesDijkstraTab[i];
+		delete[] timesKruskalList[i];
+		delete[] timesKruskalTab[i];
+		delete[] timesPrimList[i];
+		delete[] timesPrimTab[i];
+	}
+
+	delete[] timesBellmanList;
+	delete[] timesBellmanTab;
+	delete[] timesDijkstraList;
+	delete[] timesDijkstraTab;
+	delete[] timesKruskalList;
+	delete[] timesKruskalTab;
+	delete[] timesPrimList;
+	delete[] timesPrimTab;
 }

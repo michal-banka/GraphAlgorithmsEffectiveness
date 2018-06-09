@@ -1,0 +1,5 @@
+Prim total times - List - (divide by 100 to get average)
+24.4873	0	0	0	0	
+31.0205	0	0	0	0	
+38.6252	0	0	0	0	
+45.2139	0	0	0	0	
