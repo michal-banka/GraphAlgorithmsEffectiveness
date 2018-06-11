@@ -263,7 +263,9 @@ int List::dijkstra(int from, int to)
 	//constructor fullfil list with 0 as value
 	//0 - not checked, 1 - checked
 	BidirectionalListManagement checked = BidirectionalListManagement(vertices);
+	BidirectionalListManagement tempChecked = BidirectionalListManagement(vertices);
 	int now = from;
+	int oldNow = now;
 	dijkstraNode* nodes = new dijkstraNode[vertices];
 	//fill every node with distance = 1000 (it's over limit of weight that might be given by user)
 	//except nodes[from], it has distance = 0
@@ -278,12 +280,12 @@ int List::dijkstra(int from, int to)
 	BidirectionalList* temp = list[now].getHead();
 
 	//now we check every vertex
-	while(checked.doesValueExist(0))
+	while (checked.doesValueExist(0))
 	{
-		
+		oldNow = now;
 		temp = list[now].getHead();
 		//check every edge of vertex
-		while(temp)
+		while (temp)
 		{
 			//if new path is shorter than previous change with new
 			if (nodes[now].distance + temp->getWeight() < nodes[temp->getValue()].distance)
@@ -298,7 +300,7 @@ int List::dijkstra(int from, int to)
 		//find node with the smallest node distance which has NOT been checked yet
 		int min = 1000;
 
-		for (int i = 0 ;i < vertices; i++)
+		for (int i = 0; i < vertices; i++)
 		{
 			if (nodes[i].distance < min && checked[i]->getValue() != 1)
 			{
@@ -306,6 +308,7 @@ int List::dijkstra(int from, int to)
 				now = i;
 			}
 		}
+		if (oldNow == now) break;
 	}
 
 	delete temp;
@@ -321,13 +324,13 @@ int List::dijkstra(int from, int to)
 		//WRITE PATH - due to counting time it is commented now
 		int dist = nodes[to].distance;
 		now = to;
-		//std::cout << "Droga: ";
+		std::cout << "Droga: ";
 		while (now != from)
 		{
-			//std::cout << now << ", ";
+			std::cout << now << " <- ";
 			now = nodes[now].previous;
 		}
-		//std::cout << from << std::endl;
+		std::cout << from << std::endl;
 		delete[] nodes;
 		return dist;
 	}
@@ -522,12 +525,13 @@ int List::prim2(int from)
 	}
 
 	int dist = 0;
+	std::cout << "Drzewo: " << std::endl;
 	for (int i = 0; i < vertices; i++)
 	{
 		if (i != from)
 		{
 			dist += verticesPrim[i].key;
-			//std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+			std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
 		}
 	}
 
@@ -569,12 +573,13 @@ int List::kruskal()
 	//array for final tree
 	BinaryHeap tree = BinaryHeap();
 
-	for(int i = 1; i < priorityQueue.getSize(); i++)
+	while(priorityQueue.getSize() != 0)
 	{
 		if (checked[priorityQueue.getRoot().from]->getValue() != checked[priorityQueue.getRoot().to]->getValue())
 		{
 			//add edge to tree
 			tree.addToHeap({ priorityQueue.getRoot().from , priorityQueue.getRoot().to , priorityQueue.getRoot().weight });
+			
 			//connect subtrees
 			int subtreeIdx = checked[priorityQueue.getRoot().to]->getValue();
 			for(int j  = 0; j < checked.getCount(); j++)
@@ -587,16 +592,15 @@ int List::kruskal()
 				}
 			}
 		}
-
 		priorityQueue.deleteRoot();
 	}
 
 	int distance = 0;
-	//std::cout << "Drzewo: " << std::endl;
+	std::cout << "Drzewo: " << tree.getSize() <<  std::endl;
 	for(int i = 0; i < tree.getSize(); i++)
 	{
 		distance += tree[i].weight;
-		//std::cout << tree[i].from << "->" << tree[i].to << "[" << tree[i].weight << "]" << std::endl;
+		std::cout << tree[i].from << "->" << tree[i].to << "[" << tree[i].weight << "]" << std::endl;
 	}
 
 	delete[] temp;
@@ -647,16 +651,25 @@ int List::bellman_ford(int from, int to)
 	int now = to;
 	int dist = verticesBF[now].distance;
 
-	//std::cout << "DROGA" << std::endl;
+	std::cout << "DROGA" << std::endl;
 	while (now != from)
 	{
-		//std::cout << now << ", ";
+		if (now == -1)
+		{
+			std::cout << from << " - Nie ma po³aczenia tych wierzcholkow!" << std::endl;
+			break;
+		}
+		std::cout << now << " <- ";
 		now = verticesBF[now].previous;
 	}
-	//std::cout << from << std::endl;
+	if (now != -1) std::cout << from << std::endl;
+	else
+	{
+		delete[] verticesBF;
+		return -1;
+	}
 
 	delete[] verticesBF;
-	delete temp;
 
 	return dist;
 }

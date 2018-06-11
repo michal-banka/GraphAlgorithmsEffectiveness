@@ -459,8 +459,10 @@ int Matrix::dijkstra(int from, int to, bool directed)
 
 	BidirectionalListManagement checked = BidirectionalListManagement(vertices);
 	int now = from;
+	int oldNow = now;
 	dijkstraNode* nodes = new dijkstraNode[vertices];
 
+	//if default value was 1000 this loop could be missed
 	for (int i = 0; i < vertices; i++)
 	{
 		nodes[i].distance = 1000;
@@ -472,6 +474,7 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	//now we check every vertex
 	while (checked.doesValueExist(0))
 	{
+		oldNow = now;
 		//checked.showList();
 		for(int i = 0 ;i < edges; i++)
 		{
@@ -507,6 +510,8 @@ int Matrix::dijkstra(int from, int to, bool directed)
 				now = i;
 			}
 		}
+
+		if (oldNow == now) break;
 	}
 
 	if (nodes[to].previous == -1)
@@ -519,13 +524,13 @@ int Matrix::dijkstra(int from, int to, bool directed)
 	{
 		int dist = nodes[to].distance;
 		now = to;
-		//std::cout << "Droga: ";
+		std::cout << "Droga: ";
 		while (now != from)
 		{
-			//std::cout << now << ", ";
+			std::cout << now << " <- ";
 			now = nodes[now].previous;
 		}
-		//std::cout << from << std::endl;
+		std::cout << from << std::endl;
 		delete[] nodes;
 		return dist;
 	}
@@ -744,7 +749,7 @@ int Matrix::prim2(int from)
 		if (i != from)
 		{
 			dist += verticesPrim[i].key;
-			//std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
+			std::cout << verticesPrim[i].previous << " -> " << i << " [" << verticesPrim[i].key << "]" << std::endl;
 		}
 	}
 
@@ -775,13 +780,6 @@ int Matrix::kruskal()
 	for (int i = 0; i< vertices; i++)
 	{
 		checked.addNewElementEnd(i, 0);
-
-		//while (temp)
-		//{
-		//	//i didn't know it's possible :O
-		//	priorityQueue.addToHeap({ i, temp->getValue(), temp->getWeight() });
-		//	temp = temp->getNext();
-		//}
 	}
 
 	int from = 0, to = 0;
@@ -810,7 +808,7 @@ int Matrix::kruskal()
 	//array for final tree
 	BinaryHeap tree = BinaryHeap();
 
-	for (int i = 1; i < priorityQueue.getSize(); i++)
+	while (priorityQueue.getSize() != 0)
 	{
 		if (checked[priorityQueue.getRoot().from]->getValue() != checked[priorityQueue.getRoot().to]->getValue())
 		{
@@ -832,11 +830,11 @@ int Matrix::kruskal()
 	}
 
 	int distance = 0;
-	//std::cout << "Drzewo: " << std::endl;
+	std::cout << "Drzewo: " << std::endl;
 	for (int i = 0; i < tree.getSize(); i++)
 	{
 		distance += tree[i].weight;
-		//std::cout << tree[i].from << "->" << tree[i].to << "[" << tree[i].weight << "]" << std::endl;
+		std::cout << tree[i].from << "->" << tree[i].to << "[" << tree[i].weight << "]" << std::endl;
 	}
 
 	return distance;
@@ -907,13 +905,23 @@ int Matrix::bellman_ford(int from, int to, bool directed)
 	int now = to;
 	int dist = verticesBF[now].distance;
 
-	//std::cout << "DROGA" << std::endl;
+	std::cout << "DROGA" << std::endl;
 	while (now != from)
 	{
-		//std::cout << now << ", ";
+		if (now == -1)
+		{
+			std::cout << from << " - Nie ma po³aczenia tych wierzcholkow!" << std::endl;
+			break;
+		}
+		std::cout << now << " <- ";
 		now = verticesBF[now].previous;
 	}
-	//std::cout << from << std::endl;
+	if (now != -1) std::cout << from << std::endl;
+	else
+	{
+		delete[] verticesBF;
+		return -1;
+	}
 
 	delete[] verticesBF;
 

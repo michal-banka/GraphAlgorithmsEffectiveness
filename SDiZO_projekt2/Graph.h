@@ -28,6 +28,7 @@ public:
 	void showRepresentations();
 	void clearAll();
 	bool isDirected();
+	void setDirection(bool direction);
 	int getVertices();
 	void editEdge(int from, int to, int weight);
 

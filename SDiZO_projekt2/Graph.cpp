@@ -147,6 +147,11 @@ bool Graph::isDirected()
 	return this->directed;
 }
 
+void Graph::setDirection(bool direction)
+{
+	this->directed = direction;
+}
+
 int Graph::getVertices()
 {
 	return matrixRepresentation.getVertices();

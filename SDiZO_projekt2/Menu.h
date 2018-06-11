@@ -14,6 +14,8 @@ public:
 	~Menu();
 
 	void menu();
+	void menuShortestPath();
+	void menuMSP();
 	void editMenu();
 	
 	// possible change of idea
